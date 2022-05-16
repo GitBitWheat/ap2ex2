@@ -2,7 +2,7 @@
 
 namespace ap2ex2.Services
 {
-    public class UsersService : IUserService
+    public class UsersService : IUsersService
     {
         private List<User> users = new List<User>();
 

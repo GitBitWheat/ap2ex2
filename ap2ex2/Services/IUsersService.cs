@@ -2,7 +2,7 @@
 
 namespace ap2ex2.Services
 {
-    public interface IUserService
+    public interface IUsersService
     {
         public void addUser(string username, string password, string nickname, string pfp);
 

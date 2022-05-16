@@ -6,7 +6,7 @@ namespace ap2ex2.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly IUserService _service;
+        private readonly IUsersService _service;
 
         /* This is the constructor that should be used but I'm not sure how to do it
         public UsersController(IUserService service)
