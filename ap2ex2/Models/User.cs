@@ -5,7 +5,10 @@ namespace ap2ex2.Models
     public class User
     {
         [Key]
-        public string? Userame { get; set; }
+        public int? Id { get; set; }
+        
+        [Required]
+        public string? Username { get; set; }
 
         [Required]
         public string? Nickname { get; set; }
@@ -13,8 +16,6 @@ namespace ap2ex2.Models
         [Required]
         [DataType(DataType.Password)]
         public string? Password { get; set; }
-
-        [Required]
         public string? Pfp { get; set; }
 
         public List<List<Message>>? Messages { get; set; } = new List<List<Message>>();

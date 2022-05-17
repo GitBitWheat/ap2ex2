@@ -1,0 +1,25 @@
+@model User
+
+<form asp-action="Edit">
+    <input type="hidden" name ="id" value="@Model.Id"/>
+    <div>
+        <label>Username</label>
+        <input name="username" value="@Model.Username"/>
+    </div>
+    <div>
+        <label>Nickname</label>
+        <input name="nickname" value="@Model.Nickname"/>
+    </div>
+    <div>
+        <label>Password</label>
+        <input name="password" value="@Model.Password"/>
+    </div>
+    <div>
+        <label>Image</label>
+        <input name="image" value="@Model.Pfp"/>
+    </div>
+    <div>
+        <input type="submit"/>
+    </div>
+
+</form>
