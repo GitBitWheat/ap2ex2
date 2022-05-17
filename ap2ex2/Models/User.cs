@@ -18,6 +18,6 @@ namespace ap2ex2.Models
         public string? Password { get; set; }
         public string? Pfp { get; set; }
 
-        public List<List<Message>>? Messages { get; set; } = new List<List<Message>>();
+        public List<List<Message>>? Messages { get; set; }
     }
 }
