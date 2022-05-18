@@ -4,10 +4,12 @@ using ap2ex2.Services;
 using ap2ex2.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace ap2ex2.Controllers
 {
+    [Authorize]
     public class UsersController : Controller
     {
         private readonly IUserService _service;
@@ -26,8 +28,6 @@ namespace ap2ex2.Controllers
         // GET: UsersController/Index
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("username") == null)
-                return RedirectToAction("Login", "users");
             return View(_service.GetAllUsers());
         }
 
@@ -40,12 +40,11 @@ namespace ap2ex2.Controllers
         // POST: UsersController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login([Bind("Username, Password")] User user)
+        public IActionResult Login(string username, string password)
         {
-            if (_service.Login(user.Username, user.Password))
+            if (_service.Login(username, password))
             {
-                Signin(user);
-                HttpContext.Session.SetString("username", user.Username);
+                SessionSignin(username);
                 return RedirectToAction(nameof(Index), "Users");
             }
             else
@@ -79,7 +78,6 @@ namespace ap2ex2.Controllers
             int id = _service.AddUser(user);
             try
             {
-                HttpContext.Session.SetString("username", user.Username);
                 return RedirectToAction(nameof(Login));
             }
             catch
@@ -93,11 +91,11 @@ namespace ap2ex2.Controllers
         {
             return View(_service.GetUser(id));
         }
-        private async void Signin(User account)
+        private async void SessionSignin(string username)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, account.Username),
+                new Claim(ClaimTypes.Name, username),
 
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -106,11 +104,10 @@ namespace ap2ex2.Controllers
                 //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10);
 
             };
-            await HttpContent.SignInAsync(
+            await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-
         }
     }
 }
