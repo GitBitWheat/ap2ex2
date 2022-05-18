@@ -46,4 +46,14 @@ public class UserService : IUserService
         user.Password = password;
         user.Pfp = image;
     }
+
+    public bool Login(string username, string password)
+    {
+        User user = GetUserByUsername(username);
+        if (user != null && user.Password == password)
+        {
+            return true;
+        }
+        return false;
+    }
 }

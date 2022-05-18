@@ -11,4 +11,5 @@ public interface IUserService
     public int AddUser(string username, string nickname, string password, string image);
 
     public void EditUser(int id, string username, string nickname, string password, string image);
+    public bool Login(string username, string password);
 }
