@@ -38,18 +38,14 @@ public class UserService : IUserService
         return nextId;
     }
 
-    public void EditUser(int id, string username, string nickname, string password, string image)
+    public User? GetUserByUsername(string username)
     {
-        User? user = GetUser(id);
-        user.Username = username;
-        user.Nickname = nickname;
-        user.Password = password;
-        user.Pfp = image;
+        return users.Find(user => user.Username == username);
     }
 
     public bool Login(string username, string password)
     {
-        User user = GetUserByUsername(username);
+        User? user = GetUserByUsername(username);
         if (user != null && user.Password == password)
         {
             return true;
