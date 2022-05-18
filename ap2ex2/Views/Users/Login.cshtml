@@ -1,35 +1,35 @@
 <form asp-action="Login" id="Login">
     <div class="formBox">
-    <div class="logo">
-        <h1><i class="bi bi-whatsapp"></i></h1>
-    </div>
-    <div class="row mb-3">
-        <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
-        <div class="col-sm-10">
-            <input type="text" name="username" class="form-control" id="inputUsername-login">
+        <div class="logo">
+            <h1><i class="bi bi-whatsapp"></i></h1>
         </div>
-    </div>
-    <div class="row mb-3">
-        <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
-        <div class="col-sm-10">
-            <input type="password" name="Password" class="form-control" id="inputPassword-login">
+        <div class="row mb-3">
+            <label for="inputUsername" class="col-sm-2 col-form-label">Username</label>
+            <div class="col-sm-10">
+                <input type="text" name="username" class="form-control" id="inputUsername-login">
+            </div>
         </div>
-    </div>
-    <div class="row mb-3">
-        <div>
-            @if (ViewBag.Error != null)
-            {
-                <div class="text-danger">@ViewBag.Error</div>
-            }
+        <div class="row mb-3">
+            <label for="inputPassword" class="col-sm-2 col-form-label">Password</label>
+            <div class="col-sm-10">
+                 <input type="password" name="Password" class="form-control" id="inputPassword-login"> 
+            </div>
         </div>
-        <span class="col-sm-2">
-            <button type="submit" class="btn btn-primary" id="loginButton">Sign in</button>
-        </span>
-        <span class="col-sm-10 not-registered">
-            Not registered? <a type="button" asp-action="Signup" class="click-here" id="registerButton">Click here</a>
-            to register.
-        </span>
-    </div>
+        <div class="row mb-3">
+            <div>
+                @if (ViewBag.Error != null)
+                {
+                    <div class="text-danger">@ViewBag.Error</div>
+                }
+            </div>
+            <span class="col-sm-2">
+                <button type="submit" class="btn btn-primary" id="loginButton">Sign in</button>
+            </span>
+            <span class="col-sm-10 not-registered">
+                Not registered? <a type="button" asp-action="Signup" class="click-here" id="registerButton">Click here</a>
+                to register.
+            </span>
+        </div>
     </div>
 </form>
 

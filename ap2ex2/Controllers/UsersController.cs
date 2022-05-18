@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ap2ex2.Controllers
 {
-    //[Authorize]
     public class UsersController : Controller
     {
         private readonly IUserService _service;
@@ -37,31 +36,6 @@ namespace ap2ex2.Controllers
             return View(_service.GetAllUsers());
         }
 
-        // GET: UsersController/Login
-        public ActionResult Login()
-        {
-            return View();
-        }
-
-        // POST: UsersController/Login
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Login(string username, string password)
-        {
-            if (_service.Login(username, password))
-            {
-                //SessionSignin(username);
-                return RedirectToAction(nameof(Index), "Users");
-            }
-            else
-            {
-                ViewData["Error"] = "Username or password is incorrect.";
-            }
-
-            return View();
-        }
-
-
         // GET: UsersController/Signup
         public ActionResult Signup()
         {
@@ -75,21 +49,47 @@ namespace ap2ex2.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View();
+                //SessionSignin(username);
+                return RedirectToAction(nameof(Index), "Users");
             }
+            else
+            {
+                ViewData["Error"] = "Username or password is incorrect.";
+            }
+
+            return View();
+        }
 
             /*
              * Checking if there already exists a user with this username...
              */
-            int id = _service.AddUser(user);
-            try
+            _service.AddUser(user);
+            return RedirectToAction(nameof(Login));
+
+        }
+
+        // GET: UsersController/Login
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        // POST: UsersController/Login
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(string username, string password)
+        {
+            if (_service.Login(username, password))
             {
-                return RedirectToAction(nameof(Login));
+                SessionSignIn(username);
+                return RedirectToAction(nameof(Index), "Users");
             }
-            catch
+            else
             {
-                return View();
+                ViewData["Error"] = "Username or password is incorrect.";
             }
+
+            return View();
         }
 
         // GET: UsersController/Details
@@ -97,25 +97,23 @@ namespace ap2ex2.Controllers
         {
             return View(_service.GetUser(id));
         }
-        /*
-        private async void SessionSignin(string username)
+
+        private async void SessionSignIn(string username)
         {
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, username),
-
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
                 //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10);
-
             };
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
-        }*/
+        }
 
         public ActionResult GetContacts(int id)
         {
