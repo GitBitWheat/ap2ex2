@@ -1,0 +1,173 @@
+﻿@{
+    ViewData["Title"] = "Chat";
+}
+
+@section Scripts{
+    <script src="~/js/load_contacts.js"></script>
+}
+
+<div class="chatBox">
+    <div class="row">
+        <div class="col-4 user">
+            <span id="user-info"></span>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn transparentButton" id="addContact" data-bs-toggle="modal"
+                data-bs-target="#addContactModal">
+                <h3>
+                    <i class="bi bi-person-plus"></i>
+                </h3>
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add contact</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                id="closeAddContact" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="Contact's username..."
+                                    id="inputContact">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="addContactButton">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-8 user" id="contactInChat"></div>
+    </div>
+    <div class="row" id="chatAndContactsRow">
+        <div class="col-4 chatListCol">
+            <ul class="list-group" id="chatList">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">Add Contact To Begin</div>
+                    </div>
+                    <span>
+                        <h3 class="add-contact-arrow">
+                            <i class="bi bi-arrow-up-circle-fill"></i>
+                        </h3>
+                    </span>
+                </li>
+            </ul>
+        </div>
+        <div class="col-8 chats">
+            <div id="sentChat"></div>
+            <div class="sendMessageTab">
+                <div class="row">
+                    <div class="col-auto most-left-attach-button">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn" data-bs-toggle="modal" id="imageButton"
+                            data-bs-target="#imageModal">
+                            <h3>
+                                <i class="bi bi-image"></i>
+                            </h3>
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="imageModal" tabindex="-1"
+                            aria-labelledby="imageModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="imageModalLabel">Upload Image
+                                        </h5>
+                                        <button type="button" id="closeImageModalButton" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="input-group mb-3">
+                                            <input type="file" accept="image/*" class="form-control" id="messageInputImage">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="sendImageMessageButton"
+                                            class="btn btn-primary">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto attach-button">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn" data-bs-toggle="modal" id="videoButton"
+                            data-bs-target="#videoModal">
+                            <h3>
+                                <i class="bi bi-camera-video-fill"></i>
+                            </h3>
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="videoModal" tabindex="-1"
+                            aria-labelledby="videoModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="videoModalLabel">Upload Video
+                                        </h5>
+                                        <button type="button" id="closeVideoModalButton" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="input-group mb-3">
+                                            <input type="file" accept="video/*" class="form-control" id="messageInputVideo">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="sendVideoMessageButton"
+                                            class="btn btn-primary">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto attach-button">
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn" data-bs-toggle="modal" id="microphoneButton"
+                            data-bs-target="#microphoneModal">
+                            <h3>
+                                <i class="bi bi-mic-fill"></i>
+                            </h3>
+                        </button>
+                        <!-- Modal -->
+                        <div class="modal fade" id="microphoneModal" tabindex="-1"
+                            aria-labelledby="microphoneModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="microphoneModalLabel">Upload Recording</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close" id="closeMicrophoneModalButton"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <button type="button" class="btn btn-secondary" id="startRecordingButton">Start recording</button>
+                                            <button type="button" class="btn btn-secondary" id="stopRecordingButton">Stop recording</button>                                                
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" id="sendAudioMessageButton"
+                                            class="btn btn-primary">Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="input-group mb-3 send-message">
+                            <input type="text" class="form-control" id="message-to-send"
+                                placeholder="Type a message..." aria-label="Recipient's username"
+                                aria-describedby="button-addon2">
+                            <button class="btn btn-outline-secondary" id="sendTextMessageButton"
+                                type="button">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

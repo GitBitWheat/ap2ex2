@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ap2ex2.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class UsersController : Controller
     {
         private readonly IUserService _service;
@@ -23,6 +23,12 @@ namespace ap2ex2.Controllers
         public UsersController()
         {
             _service = new UserService();
+            //Adding users for testing
+            User harryPotter = new User { Username = "HarryPotter", Nickname = "Harry Potter", Password = "Wizard1", Pfp = "..." };
+            User lukeSkywalker = new User { Username = "LukeSkywalker", Nickname = "Luke Skywalker", Password = "Jedi2", Pfp = "..." };
+            _service.AddUser(harryPotter);
+            _service.AddUser(lukeSkywalker);
+            _service.AddContacts(1, 2);
         }
 
         // GET: UsersController/Index
@@ -44,7 +50,7 @@ namespace ap2ex2.Controllers
         {
             if (_service.Login(username, password))
             {
-                SessionSignin(username);
+                //SessionSignin(username);
                 return RedirectToAction(nameof(Index), "Users");
             }
             else
@@ -91,6 +97,7 @@ namespace ap2ex2.Controllers
         {
             return View(_service.GetUser(id));
         }
+        /*
         private async void SessionSignin(string username)
         {
             var claims = new List<Claim>
@@ -108,6 +115,12 @@ namespace ap2ex2.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+        }*/
+
+        public ActionResult GetContacts(int id)
+        {
+            var contacts = _service.GetContacts(id);
+            return Json(contacts);
         }
     }
 }

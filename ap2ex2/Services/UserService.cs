@@ -54,4 +54,23 @@ public class UserService : IUserService
 
         return false;
     }
+
+    public List<User>? GetContacts(int id)
+    {
+        User? user = GetUser(id);
+        if (null == user)
+            return null;
+        else
+            return user.Contacts;
+    }
+
+    public void AddContacts(int id1, int id2)
+    {
+        User? user1 = GetUser(id1);
+        User? user2 = GetUser(id2);
+        if (null == user1 || null == user2)
+            return;
+        user1.Contacts.Add(user2);
+        user2.Contacts.Add(user1);
+    }
 }

@@ -7,4 +7,6 @@ public interface IUserService
     public User? GetUser(int id);
     public bool Login(string username, string password);
     int AddUser(User user);
+    public List<User>? GetContacts(int id);
+    public void AddContacts(int id1, int id2);
 }

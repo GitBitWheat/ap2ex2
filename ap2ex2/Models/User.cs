@@ -23,8 +23,6 @@ namespace ap2ex2.Models
         [DataType(DataType.ImageUrl)]
         public string? Pfp { get; set; }
 
-        public List<List<Message>> Messages { get; set; } = new List<List<Message>>();
-
-        public List<User> contacts { get; set; } = new List<User>();
+        public List<User> Contacts { get; set; } = new List<User>();
     }
 }

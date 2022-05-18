@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddSession(options =>
+/*builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromSeconds(10);
 });
@@ -17,7 +17,7 @@ builder.Services.AddAuthentication(options =>
     .AddCookie(options =>
     {
         options.LoginPath = "/Users/Login/";
-    });
+    });*/
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -29,9 +29,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseSession();
+/*app.UseSession();
 
-app.UseAuthentication();
+app.UseAuthentication();*/
 
 app.UseAuthorization();
 
