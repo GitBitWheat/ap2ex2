@@ -43,7 +43,7 @@ namespace ap2ex2.Controllers
             }
             else
             {
-                ViewData["Error"] = "User or password is incorrect.";
+                ViewData["Error"] = "Username or password is incorrect.";
             }
             return View();
         }
