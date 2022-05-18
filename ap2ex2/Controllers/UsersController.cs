@@ -36,38 +36,6 @@ namespace ap2ex2.Controllers
             return View(_service.GetAllUsers());
         }
 
-        // GET: UsersController/Signup
-        public ActionResult Signup()
-        {
-            return View();
-        }
-
-        // POST: UsersController/Signup
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Signup([Bind("Username,Nickname,Password,Pfp")] User user)
-        {
-            if (!ModelState.IsValid)
-            {
-                //SessionSignin(username);
-                return RedirectToAction(nameof(Index), "Users");
-            }
-            else
-            {
-                ViewData["Error"] = "Username or password is incorrect.";
-            }
-
-            return View();
-        }
-
-            /*
-             * Checking if there already exists a user with this username...
-             */
-            _service.AddUser(user);
-            return RedirectToAction(nameof(Login));
-
-        }
-
         // GET: UsersController/Login
         public ActionResult Login()
         {
@@ -92,12 +60,42 @@ namespace ap2ex2.Controllers
             return View();
         }
 
+
+        // GET: UsersController/Signup
+        public ActionResult Signup()
+        {
+            return View();
+        }
+
+        // POST: UsersController/Signup
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Signup([Bind("Username,Nickname,Password,Pfp")] User user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            /*
+             * Checking if there already exists a user with this username...
+             */
+            int id = _service.AddUser(user);
+            try
+            {
+                return RedirectToAction(nameof(Login));
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
         // GET: UsersController/Details
         public ActionResult Details(int id)
         {
             return View(_service.GetUser(id));
         }
-
         private async void SessionSignIn(string username)
         {
             var claims = new List<Claim>
