@@ -29,17 +29,39 @@ namespace ap2ex2.Controllers
             return View(service.GetUser(id));
         }
         
-        public IActionResult Create()
+        public IActionResult Register()
         {
             return View();
         }
-        
+
         [HttpPost]
-        public IActionResult Create(string username, string nickname, string password, string image)
+        public IActionResult Register(string username, string nickname, string password, string image)
         {
-            service.CreateUser(username, nickname, password, image);
-            return Redirect(nameof(Index));
+            service.Register(username, nickname, password, image);
+            return Redirect(nameof(Login));
         }
+        
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(string username, string password)
+        {
+
+            if (service.Login(username, password)) 
+            {
+                return RedirectToAction(nameof(Index), "User");
+            }
+            else
+            {
+                ViewData["Error"] = "User or password is incorrect.";
+            }
+            return View();
+        }
+        
+        
 
         public IActionResult Edit(int id)
         {

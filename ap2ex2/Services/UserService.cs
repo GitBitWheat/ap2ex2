@@ -14,8 +14,13 @@ public class UserService : IUserService
     {
         return users.Find(user => user.Id == id);
     }
+    
+    public User GetUserByUsername(string username)
+    {
+        return users.Find(user => user.Username == username);
+    }
 
-    public void CreateUser(string username, string nickname, string password, string image)
+    public void Register(string username, string nickname, string password, string image)
     {
         int? nextId = users.Max(user => user.Id) + 1;
         if (users.Count == 0)
@@ -33,5 +38,15 @@ public class UserService : IUserService
         user.Nickname = nickname;
         user.Password = password;
         user.Pfp = image;
+    }
+
+    public bool Login(string username, string password)
+    {
+        User user = GetUserByUsername(username);
+        if (user != null && user.Password == password)
+        {
+            return true;
+        }
+        return false;
     }
 }

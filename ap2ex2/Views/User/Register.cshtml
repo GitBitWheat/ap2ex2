@@ -1,32 +1,32 @@
-@model User
-
 <div class="tab-content">
     <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-        <form asp-action="Edit">
-            <input type="hidden" name ="id" value="@Model.Id"/>
+        <form asp-action="Register">
             <div class="form-outline mb-4">
-                <input id="loginName" name="username" value="@Model.Username" class="form-control"/>
+                <input id="loginName" name="username" class="form-control"/>
                 <label class="form-label" for="loginName">Username</label>
             </div>
 
             <div class="form-outline mb-4">
-                <input id="nickName" name="nickname" value="@Model.Nickname" class="form-control"/>
+                <input id="nickName" name="nickname" class="form-control"/>
                 <label class="form-label" for="loginName">Nickname</label>
             </div>
             <!-- Password input -->
             <div class="form-outline mb-4">
-                <input type="password" id="loginPassword" name="password" value="@Model.Password"class="form-control"/>
+                <input type="password" id="loginPassword" name="Password" class="form-control"/>
                 <label class="form-label" for="loginPassword">Password</label>
             </div>
             <div class="form-outline mb-4">
-                <input id="image" name="image" value="@Model.Pfp" class="form-control"/>
+                <input id="image" name="image" class="form-control"/>
                 <label class="form-label" for="loginName">Image</label>
             </div>
             <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-block mb-4">Submit</button>
+            <button type="submit" class="btn btn-primary btn-block mb-4">Signup</button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+                <p>Already Registered? <a asp-action="Login">Login</a></p>
+            </div>
         </form>
     </div>
 </div>
-
-
 
