@@ -3,18 +3,25 @@
 @{
     ViewData["Title"] = "Details";
 }
-
-<ul style="color: white;">
-	<li>
-		@Model.Username
-	</li>
-		<li>
-		@Model.Nickname
-	</li>
-	<li>
-		@Model.Password
-	</li>
-	<li>
-		<!-- <img src="@Model.Pfp"/> -->
-	</li>
-</ul>
+<div class="formBox">
+<table class="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>UserName</th>
+        <th>NickName</th>
+        <th>Password</th>
+        <th>Picture</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>@Model.Id</td>
+        <td>@Model.Username</td>
+        <td>@Model.Nickname</td>
+        <td>@Model.Password</td>
+        <td>@Model.Pfp</td>
+    </tr>
+    </tbody>
+</table>
+</div>

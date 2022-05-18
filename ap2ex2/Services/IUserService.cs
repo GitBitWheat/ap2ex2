@@ -3,13 +3,8 @@ namespace ap2ex2.Services;
 
 public interface IUserService
 {
-    public List<User> GetAllUsers();
-
-    public User? GetUser(int id);
-
-    public int AddUser(User user);
-
-    public int AddUser(string username, string nickname, string password, string image);
-
+    public List<User> GetAllUsers(); 
+    public User GetUser(int id);
     public bool Login(string username, string password);
+    int AddUser(User user);
 }
