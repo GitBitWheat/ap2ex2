@@ -39,7 +39,7 @@ namespace ap2ex2.Controllers
         {
             if (_service.Login(username, password))
             {
-                return RedirectToAction(nameof(Index), "User");
+                return RedirectToAction(nameof(Index), "Users");
             }
             else
             {
@@ -69,7 +69,7 @@ namespace ap2ex2.Controllers
             int id = _service.AddUser(user);
             try
             {
-                return RedirectToAction(nameof(Details), new { id = id });
+                return RedirectToAction(nameof(Login));
             }
             catch
             {
