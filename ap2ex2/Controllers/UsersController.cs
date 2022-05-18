@@ -40,12 +40,12 @@ namespace ap2ex2.Controllers
         // POST: UsersController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Login([Bind("Username, Password")] User user)
+        public IActionResult Login(string username, string password)
         {
-            if (_service.Login(user.Username, user.Password))
+            if (_service.Login(username, password))
             {
-                Signin(user);
-                HttpContext.Session.SetString("username", user.Username);
+                Signin(username);
+                HttpContext.Session.SetString("username", username);
                 return RedirectToAction(nameof(Index), "Users");
             }
             else
@@ -79,7 +79,6 @@ namespace ap2ex2.Controllers
             int id = _service.AddUser(user);
             try
             {
-                HttpContext.Session.SetString("username", user.Username);
                 return RedirectToAction(nameof(Login));
             }
             catch
@@ -93,11 +92,11 @@ namespace ap2ex2.Controllers
         {
             return View(_service.GetUser(id));
         }
-        private async void Signin(User account)
+        private async void Signin(string acountUsername)
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, account.Username),
+                new Claim(ClaimTypes.Name, acountUsername),
 
             };
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
