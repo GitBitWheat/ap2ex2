@@ -1,0 +1,63 @@
+@model User
+
+@{
+    ViewData["Title"] = "Signup";
+}
+
+@section Scripts{
+    <script src="~/js/signup.js"></script>
+}
+
+<form asp-action="Signup" id="signupForm">
+    <div class="formBox">
+        <div class="logo">
+            <h1><i class="bi bi-whatsapp"></i></h1>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="Username" class="col-sm-2 col-form-label" required></label>
+            <div class="col-sm-10">
+                <input asp-for="Username" type="text" class="form-control" id="inputUsername-signup">
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="Nickname" class="col-sm-2 col-form-label" required></label>
+            <div class="col-sm-10">
+                <input asp-for="Nickname" type="text" class="form-control" id="inputNickname">
+                <span asp-validation-for="Nickname" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="Pfp" class="col-sm-2 col-form-label"></label>
+            <div class="col-sm-10">
+                <input asp-for="Pfp" type="file" accept="image/*" class="form-control" id="inputPfp">
+                <!-- <input asp-for="Pfp" type="text" class="form-control" id="inputPfp"> -->
+                <span asp-validation-for="Pfp" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label asp-for="Password" placeholder="Password should contain numbers & letters"
+                class="col-sm-2 col-form-label" required></label>
+            <div class="col-sm-10">
+                <input asp-for="Password" class="form-control" id="inputPassword-signup">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <label for="verifyPassword" class="col-sm-2 col-form-label" required>Verify Password</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="verifyPassword">
+                <span id="passwordVerificationError" class="text-danger">The password verification does not match</span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <span class="col-sm-2">
+                <button type="submit" class="btn btn-primary" id="signUpButton">Sign up</button>
+            </span>
+            <span class="col-sm-10 already-registered">
+                Already registered? <button type="button" class="click-here" id="alreadyRegisteredButton">Click
+                    here</button> to sign in.
+            </span>
+        </div>
+    </div>
+</form>

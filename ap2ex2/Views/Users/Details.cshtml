@@ -1,0 +1,20 @@
+@model User
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<ul style="color: white;">
+	<li>
+		@Model.Username
+	</li>
+		<li>
+		@Model.Nickname
+	</li>
+	<li>
+		@Model.Password
+	</li>
+	<li>
+		<!-- <img src="@Model.Pfp"/> -->
+	</li>
+</ul>

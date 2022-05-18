@@ -10,20 +10,32 @@ public class UserService : IUserService
         return users;
     }
 
-    public User GetUser(int id)
+    public User? GetUser(int id)
     {
         return users.Find(user => user.Id == id);
     }
 
-    public void CreateUser(string username, string nickname, string password, string image)
+    public int AddUser(User user)
     {
-        int? nextId = users.Max(user => user.Id) + 1;
+        int nextId;
         if (users.Count == 0)
-        {
             nextId = 1;
+        else
+            nextId = users.Max(user => user.Id) + 1;
+        user.Id = nextId;
+        users.Add(user);
+        return nextId;
+    }
 
-        }
+    public int AddUser(string username, string nickname, string password, string image)
+    {
+        int nextId;
+        if (users.Count == 0)
+            nextId = 1;
+        else
+            nextId = users.Max(user => user.Id) + 1;
         users.Add(new User() {Id = nextId, Username = username, Nickname = nickname, Password = password, Pfp = image });
+        return nextId;
     }
 
     public void EditUser(int id, string username, string nickname, string password, string image)

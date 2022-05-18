@@ -20,10 +20,6 @@
     <None Remove="Views\User\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controllers\" />
-    <Folder Include="Views\User\" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\.editorconfig" />
   </ItemGroup>
 </Project>
