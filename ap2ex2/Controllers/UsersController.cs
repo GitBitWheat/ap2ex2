@@ -20,10 +20,10 @@ namespace ap2ex2.Controllers
             _service = new UserService();
         }
 
-        // GET: UsersController
-        public ActionResult Index()
+        // GET: UsersController/Index
+        public IActionResult Index()
         {
-            return RedirectToAction(nameof(Signup));
+            return View(_service.GetAllUsers());
         }
 
         // GET: UsersController/Login
@@ -35,16 +35,17 @@ namespace ap2ex2.Controllers
         // POST: UsersController/Login
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(IFormCollection collection)
+        public IActionResult Login(string username, string password)
         {
-            try
+            if (_service.Login(username, password))
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), "User");
             }
-            catch
+            else
             {
-                return View();
+                ViewData["Error"] = "User or password is incorrect.";
             }
+            return View();
         }
 
 
@@ -79,8 +80,7 @@ namespace ap2ex2.Controllers
         // GET: UsersController/Details
         public ActionResult Details(int id)
         {
-            User? user = _service.GetUser(id);
-            return View(user);
+            return View(_service.GetUser(id));
         }
     }
 }
