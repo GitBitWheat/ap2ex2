@@ -22,16 +22,11 @@ namespace ap2ex2.Controllers
         public UsersController()
         {
             _service = new UserService();
-            //Adding users for testing
-            User harryPotter = new User { Username = "HarryPotter", Nickname = "Harry Potter", Password = "Wizard1", Pfp = "..." };
-            User lukeSkywalker = new User { Username = "LukeSkywalker", Nickname = "Luke Skywalker", Password = "Jedi2", Pfp = "..." };
-            _service.AddUser(harryPotter);
-            _service.AddUser(lukeSkywalker);
-            _service.AddContacts(1, 2);
-        }
 
+        }
+        
         // GET: UsersController/Index
-        public IActionResult Index()
+        public IActionResult AllUsers()
         {
             return View(_service.GetAllUsers());
         }
@@ -49,8 +44,9 @@ namespace ap2ex2.Controllers
         {
             if (_service.Login(username, password))
             {
-                SessionSignIn(username);
-                return RedirectToAction(nameof(Index), "Users");
+                HttpContext.Session.SetInt32("id", _service.GetUserByUsername(username).Id);
+                HttpContext.Session.SetString("username", username);
+                return RedirectToAction(nameof(Index), "Chat");
             }
             else
             {
@@ -80,7 +76,7 @@ namespace ap2ex2.Controllers
             /*
              * Checking if there already exists a user with this username...
              */
-            int id = _service.AddUser(user);
+            _service.AddUser(user);
             try
             {
                 return RedirectToAction(nameof(Login));
@@ -96,22 +92,22 @@ namespace ap2ex2.Controllers
         {
             return View(_service.GetUser(id));
         }
-        private async void SessionSignIn(string username)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, username),
-            };
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            var authProperties = new AuthenticationProperties
-            {
-                //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10);
-            };
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(claimsIdentity),
-                authProperties);
-        }
+        // private async void SessionSignIn(User account)
+        // {
+        //     var claims = new List<Claim>() {
+        //         new Claim(ClaimTypes.Name, account.Username),
+        //     };
+        //    
+        //     var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        //     var authProperties = new AuthenticationProperties
+        //     {
+        //         //ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(10);
+        //     };
+        //     await HttpContext.SignInAsync(
+        //         CookieAuthenticationDefaults.AuthenticationScheme,
+        //         new ClaimsPrincipal(claimsIdentity),
+        //         authProperties);
+        // }
 
         public ActionResult GetContacts(int id)
         {

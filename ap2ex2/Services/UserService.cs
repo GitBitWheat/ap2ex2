@@ -11,7 +11,7 @@ public class UserService : IUserService
         return users;
     }
 
-    public User? GetUser(int id)
+    public User? GetUser(int? id)
     {
         return users.Find(user => user.Id == id);
     }

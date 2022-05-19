@@ -1,4 +1,6 @@
-﻿@{
+﻿@model User
+
+@{
     ViewData["Title"] = "Chat";
 }
 
@@ -9,7 +11,10 @@
 <div class="chatBox">
     <div class="row">
         <div class="col-4 user">
-            <span id="user-info"></span>
+            <span id="user-info">
+                <img src="~/img/defaultProfile.jpeg" style="width: 60px; border-radius: 50%; margin-right: 5px;">
+                @Model.Nickname
+            </span>
             <!-- Button trigger modal -->
             <button type="button" class="btn transparentButton" id="addContact" data-bs-toggle="modal"
                 data-bs-target="#addContactModal">
@@ -40,7 +45,9 @@
                 </div>
             </div>
         </div>
-        <div class="col-8 user" id="contactInChat"></div>
+        <div class="col-8 user" id="contactInChat">
+            
+        </div>
     </div>
     <div class="row" id="chatAndContactsRow">
         <div class="col-4 chatListCol">
