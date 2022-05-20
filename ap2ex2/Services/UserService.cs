@@ -4,7 +4,11 @@ namespace ap2ex2.Services;
 
 public class UserService : IUserService
 {
-    private static List<User> users = new List<User>();
+    private static List<User> users = new List<User>()
+    {
+        new User(){Id = 1, Username = "user1", Nickname = "First User", Password = "User1", Pfp = "..."},
+        new User(){Id = 2, Username = "user2", Nickname = "Second User", Password = "User2", Pfp = "..."}
+    };
 
     public List<User> GetAllUsers()
     {
@@ -64,12 +68,22 @@ public class UserService : IUserService
             return user.Contacts;
     }
 
-    public void AddContacts(int id1, int id2)
+    public void AddContacts(int? id1, int id2)
     {
+        if (id1 == id2)
+        {
+            return;
+        }
         User? user1 = GetUser(id1);
         User? user2 = GetUser(id2);
         if (null == user1 || null == user2)
+        {
             return;
+        }
+        if (user1.Contacts.Contains(user2))
+        {
+             return;
+        }
         user1.Contacts.Add(user2);
         user2.Contacts.Add(user1);
     }

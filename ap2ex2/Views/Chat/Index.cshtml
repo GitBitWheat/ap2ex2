@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-4 user">
             <span id="user-info">
-                <img src="~/img/defaultProfile.jpeg" style="width: 60px; border-radius: 50%; margin-right: 5px;">
+                <img src="~/img/defaultProfile.jpeg" id="loggedUserImage" style="width: 60px; border-radius: 50%; margin-right: 5px;">
                 @Model.Nickname
             </span>
             <!-- Button trigger modal -->
@@ -29,18 +29,21 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">Add contact</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            <button type="submit" class="btn-close"  data-bs-dismiss="modal"
                                 id="closeAddContact" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" placeholder="Contact's username..."
-                                    id="inputContact">
+                            <form method="post">
+                                <div class="input-group mb-3">
+                                    <input asp-action="Index" name="contactToAdd" type="text" class="form-control" placeholder="Contact's username..."
+                                           id="inputContact">
+                                </div>
+                        
+                                <div class="modal-footer">
+                                    <button type="submit" asp-action="AddContact" class="btn btn-primary" id="addContactButton">Add</button>
+                                </div>
+                            </form>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="addContactButton">Add</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -52,16 +55,34 @@
     <div class="row" id="chatAndContactsRow">
         <div class="col-4 chatListCol">
             <ul class="list-group" id="chatList">
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">Add Contact To Begin</div>
-                    </div>
-                    <span>
-                        <h3 class="add-contact-arrow">
-                            <i class="bi bi-arrow-up-circle-fill"></i>
-                        </h3>
-                    </span>
-                </li>
+                @if (Model.Contacts.Count == 0)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">Add Contact To Begin</div>
+                        </div>
+                        <span>
+                            <h3 class="add-contact-arrow">
+                                <i class="bi bi-arrow-up-circle-fill"></i>
+                            </h3>
+                        </span>
+                    </li>
+                }
+                else
+                {
+                    foreach (var user in Model.Contacts)
+                    {
+                        <li class="list-group-item d-flex justify-content-between align-items-start"><img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">@user.Nickname</div>
+                                <div>
+                                </div>
+                                <div class="latest-message-date">
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
             </ul>
         </div>
         <div class="col-8 chats">

@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Dynamic;
+using System.Runtime.CompilerServices;
+using ap2ex2.Models;
 using ap2ex2.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,6 +26,14 @@ namespace ap2ex2.Controllers
                 return RedirectToAction("Login", "Users");
             }
             return View(_userService.GetUser(HttpContext.Session.GetInt32("id")));
+        }
+        
+        [HttpPost]
+        public ActionResult AddContact(string contactToAdd)
+        {
+            User userToAdd = _userService.GetUserByUsername(contactToAdd);
+            _userService.AddContacts(HttpContext.Session.GetInt32("id"), userToAdd.Id);
+            return RedirectToAction("Index");
         }
     }
 }
