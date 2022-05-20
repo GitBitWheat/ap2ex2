@@ -35,5 +35,13 @@ namespace ap2ex2.Controllers
             _userService.AddContacts(HttpContext.Session.GetInt32("id"), userToAdd.Id);
             return RedirectToAction("Index");
         }
+        
+        [HttpPost]
+        public ActionResult ShowChat(int userId)
+        {
+            User userChat = _userService.GetUser(userId);
+            _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat = userChat;
+            return RedirectToAction("Index");
+        }
     }
 }

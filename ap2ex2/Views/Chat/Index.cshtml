@@ -38,7 +38,6 @@
                                     <input asp-action="Index" name="contactToAdd" type="text" class="form-control" placeholder="Contact's username..."
                                            id="inputContact">
                                 </div>
-                        
                                 <div class="modal-footer">
                                     <button type="submit" asp-action="AddContact" class="btn btn-primary" id="addContactButton">Add</button>
                                 </div>
@@ -49,7 +48,13 @@
             </div>
         </div>
         <div class="col-8 user" id="contactInChat">
-            
+            @if (@Model.UserInChat != null)
+            {
+                <div class="col">
+                    <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 5px;">
+                    @Model.UserInChat.Nickname
+                </div>
+            }
         </div>
     </div>
     <div class="row" id="chatAndContactsRow">
@@ -70,18 +75,23 @@
                 }
                 else
                 {
-                    foreach (var user in Model.Contacts)
+                    <form method="post">
+                    @foreach (var user in Model.Contacts)
                     {
-                        <li class="list-group-item d-flex justify-content-between align-items-start"><img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
-                            <div class="ms-2 me-auto">
-                                <div class="fw-bold">@user.Nickname</div>
-                                <div>
+                        <button type="submit" asp-action="ShowChat" asp-route-userId="@user.Id" style="width: 100%; border: none; padding: 0">
+                            <li class="list-group-item d-flex justify-content-between align-items-start">
+                                <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">@user.Nickname</div>
+                                    <div>
+                                    </div>
+                                    <div class="latest-message-date">
+                                    </div>
                                 </div>
-                                <div class="latest-message-date">
-                                </div>
-                            </div>
-                        </li>
-                    }
+                            </li>
+                        </button>
+                }
+                </form>
                 }
             </ul>
         </div>
