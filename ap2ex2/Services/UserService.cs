@@ -7,7 +7,8 @@ public class UserService : IUserService
     private static List<User> users = new List<User>()
     {
         new User(){Id = 1, Username = "user1", Nickname = "First User", Password = "User1", Pfp = "..."},
-        new User(){Id = 2, Username = "user2", Nickname = "Second User", Password = "User2", Pfp = "..."}
+        new User(){Id = 2, Username = "user2", Nickname = "Second User", Password = "User2", Pfp = "..."},
+        new User(){Id = 3, Username = "user3", Nickname = "Third User", Password = "User3", Pfp = "..."}
     };
 
     public List<User> GetAllUsers()

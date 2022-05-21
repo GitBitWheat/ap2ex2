@@ -12,11 +12,10 @@ namespace ap2ex2.Controllers
     public class ChatController : Controller
     {
         private readonly IUserService _userService;
-        
+
         public ChatController()
         {
             _userService = new UserService();
-
         }
         // GET: ChatController
         public IActionResult Index()
@@ -41,6 +40,19 @@ namespace ap2ex2.Controllers
         {
             User userChat = _userService.GetUser(userId);
             _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat = userChat;
+            return RedirectToAction("Index");
+        }
+        
+        [HttpPost]
+        public ActionResult SendMessage(string messageToSend)
+        {
+            _userService.GetUser(HttpContext.Session.GetInt32("id")).Messages.Add(new Message()
+                {sentFrom = _userService.GetUser(HttpContext.Session.GetInt32("id")),
+                    sendTo = _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat, text = messageToSend});
+            
+            _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat.Messages.Add(new Message()
+                {sentFrom = _userService.GetUser(HttpContext.Session.GetInt32("id")),
+                    sendTo = _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat, text = messageToSend});
             return RedirectToAction("Index");
         }
     }

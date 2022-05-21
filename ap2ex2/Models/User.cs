@@ -24,6 +24,8 @@ namespace ap2ex2.Models
         public string? Pfp { get; set; }
 
         public List<User> Contacts { get; set; } = new List<User>();
+        
+        public List<Message> Messages { get; set; } = new List<Message>();
         public User UserInChat { get; set; }
     }
 }

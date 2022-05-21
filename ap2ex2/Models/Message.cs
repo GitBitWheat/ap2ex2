@@ -4,8 +4,6 @@ namespace ap2ex2.Models
 {
     public class Message
     {
-        public int Id { get; set; }
-
         [Required]
         public User? sentFrom { get; set; }
 

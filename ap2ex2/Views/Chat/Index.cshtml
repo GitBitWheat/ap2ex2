@@ -84,6 +84,7 @@
                                 <div class="ms-2 me-auto">
                                     <div class="fw-bold">@user.Nickname</div>
                                     <div>
+                                        
                                     </div>
                                     <div class="latest-message-date">
                                     </div>
@@ -96,7 +97,38 @@
             </ul>
         </div>
         <div class="col-8 chats">
-            <div id="sentChat"></div>
+            <div id="sentChat">
+                @if (Model.UserInChat != null)
+                {
+                    foreach (var message in Model.Messages)
+                    {
+                        if ((message.sentFrom.Id == Model.Id && message.sendTo.Id == Model.UserInChat.Id) ||
+                            (message.sentFrom.Id == Model.UserInChat.Id && message.sendTo.Id == Model.Id))
+                        {
+                            if (message.sentFrom.Id == Model.Id)
+                            {
+                                <div class="row">
+                                    <div class="col">
+                                        <span class="usersSpeechBubble">
+                                            @message.text
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row">
+                                    <div class="col">
+                                        <span class="othersSpeechBubble">
+                                            @message.text
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                }
+            </div>
             <div class="sendMessageTab">
                 <div class="row">
                     <div class="col-auto most-left-attach-button">
@@ -196,13 +228,15 @@
                         </div>
                     </div>
                     <div class="col">
+                        <form method="post">
                         <div class="input-group mb-3 send-message">
                             <input type="text" class="form-control" id="message-to-send"
-                                placeholder="Type a message..." aria-label="Recipient's username"
-                                aria-describedby="button-addon2">
-                            <button class="btn btn-outline-secondary" id="sendTextMessageButton"
-                                type="button">Send</button>
+                                   placeholder="Type a message..." aria-label="Recipient's username"
+                                   aria-describedby="button-addon2" name="messageToSend">
+                            <button type="submit" class="btn btn-outline-secondary" id="sendTextMessageButton"
+                                    asp-action="SendMessage">Send</button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>
