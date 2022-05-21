@@ -81,12 +81,14 @@
                         <button type="submit" asp-action="ShowChat" asp-route-userId="@user.Id" style="width: 100%; border: none; padding: 0">
                             <li class="list-group-item d-flex justify-content-between align-items-start">
                                 <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
-                                <div class="ms-2 me-auto">
+                                <div class="ms-2 me-auto contactInfo">
                                     <div class="fw-bold">@user.Nickname</div>
-                                    <div>
-                                        
-                                    </div>
+                                    <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
+                                        @if (user.MessagesD.ContainsKey((@Model.Id)))
+                                        {
+                                            @user.MessagesD[@Model.Id].Last().dateTime;
+                                        }
                                     </div>
                                 </div>
                             </li>
@@ -100,30 +102,32 @@
             <div id="sentChat">
                 @if (Model.UserInChat != null)
                 {
-                    foreach (var message in Model.Messages)
+                    foreach (var item in Model.MessagesD)
                     {
-                        if ((message.sentFrom.Id == Model.Id && message.sendTo.Id == Model.UserInChat.Id) ||
-                            (message.sentFrom.Id == Model.UserInChat.Id && message.sendTo.Id == Model.Id))
+                        if (item.Key == @Model.UserInChat.Id)
                         {
-                            if (message.sentFrom.Id == Model.Id)
+                            foreach (var message in item.Value)
                             {
-                                <div class="row">
-                                    <div class="col">
-                                        <span class="usersSpeechBubble">
-                                            @message.text
-                                        </span>
+                                if (message.sentFrom.Id == Model.Id)
+                                {
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="usersSpeechBubble">
+                                                @message.text
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="row">
-                                    <div class="col">
-                                        <span class="othersSpeechBubble">
-                                            @message.text
-                                        </span>
+                                }
+                                else
+                                {
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="othersSpeechBubble">
+                                                @message.text
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             }
                         }
                     }

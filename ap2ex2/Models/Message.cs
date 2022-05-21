@@ -12,5 +12,6 @@ namespace ap2ex2.Models
 
         [Required]
         public string? text { get; set; }
+        public DateTime dateTime { get; set; }
     }
 }

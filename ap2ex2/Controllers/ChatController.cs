@@ -46,13 +46,29 @@ namespace ap2ex2.Controllers
         [HttpPost]
         public ActionResult SendMessage(string messageToSend)
         {
-            _userService.GetUser(HttpContext.Session.GetInt32("id")).Messages.Add(new Message()
-                {sentFrom = _userService.GetUser(HttpContext.Session.GetInt32("id")),
-                    sendTo = _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat, text = messageToSend});
-            
-            _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat.Messages.Add(new Message()
-                {sentFrom = _userService.GetUser(HttpContext.Session.GetInt32("id")),
-                    sendTo = _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat, text = messageToSend});
+            if(messageToSend != "")
+            {
+                User _loggedUser = _userService.GetUser(HttpContext.Session.GetInt32("id"));
+                User _userInChat = _loggedUser.UserInChat;
+
+                if (!_loggedUser.MessagesD.ContainsKey(_userInChat.Id))
+                {
+                    _loggedUser.MessagesD.Add(_userInChat.Id, new List<Message>());
+                    _userInChat.MessagesD.Add(_loggedUser.Id, new List<Message>());
+                }
+
+                _loggedUser.MessagesD[_userInChat.Id].Add(new Message()
+                {
+                    sentFrom = _loggedUser, sendTo = _userInChat,
+                    text = messageToSend, dateTime = DateTime.Now
+                });
+
+                _userInChat.MessagesD[_loggedUser.Id].Add(new Message()
+                {
+                    sentFrom = _loggedUser, sendTo = _userInChat,
+                    text = messageToSend, dateTime = DateTime.Now
+                });
+            }
             return RedirectToAction("Index");
         }
     }

@@ -26,6 +26,8 @@ namespace ap2ex2.Models
         public List<User> Contacts { get; set; } = new List<User>();
         
         public List<Message> Messages { get; set; } = new List<Message>();
+        public Dictionary < int, List<Message> > MessagesD { get; set; } = new Dictionary < int, List<Message>> ();
+
         public User UserInChat { get; set; }
     }
 }
