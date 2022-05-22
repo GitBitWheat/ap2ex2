@@ -49,26 +49,9 @@ namespace ap2ex2.Controllers
         {
             if(messageToSend != "")
             {
-                User _loggedUser = _userService.GetUser(HttpContext.Session.GetString("id"));
-                User _userInChat = _loggedUser.UserInChat;
-
-                if (!_loggedUser.Messages.ContainsKey(_userInChat.Id))
-                {
-                    _loggedUser.Messages.Add(_userInChat.Id, new List<Message>());
-                    _userInChat.Messages.Add(_loggedUser.Id, new List<Message>());
-                }
-
-                _loggedUser.Messages[_userInChat.Id].Add(new Message()
-                {
-                    sentFrom = _loggedUser, sendTo = _userInChat,
-                    text = messageToSend, dateTime = DateTime.Now
-                });
-
-                _userInChat.Messages[_loggedUser.Id].Add(new Message()
-                {
-                    sentFrom = _loggedUser, sendTo = _userInChat,
-                    text = messageToSend, dateTime = DateTime.Now
-                });
+                User loggedUser = _userService.GetUser(HttpContext.Session.GetString("id"));
+                User userInChat = loggedUser.UserInChat;
+                _userService.SendMessage(messageToSend, loggedUser.Id, userInChat.Id);
             }
             return RedirectToAction("Index");
         }

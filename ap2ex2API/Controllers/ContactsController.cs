@@ -26,6 +26,31 @@ namespace ap2ex2API.Controllers
             return Enumerable.Select<User, ApiUser>(_service.GetContacts(loggedUserId), user => new ApiUser(user)).ToArray();
         }
 
+        [HttpGet("{id}")]
+        public ApiUser? GetContactWithId(string id)
+        {
+            string loggedUserId = getLoggedUserId();
+            if (_service.isContactOfUser(loggedUserId, id))
+                return new ApiUser(_service.GetUser(id));
+            else
+                return null;
+        }
+
+        /*
+         * This line doesn't work:
+        [HttpGet("{id}", Name = "messages")]
+         * The function itself does work:
+        public Message[]? GetMessagesWithContactOfId(string id)
+        {
+            string loggedUserId = getLoggedUserId();
+            List<Message> messagesList = _service.getMessagesBetweenTwoUsers(loggedUserId, id);
+            if (null == messagesList)
+                return null;
+            else
+                return messagesList.ToArray();
+        }
+        */
+
         private string getLoggedUserId()
         {
             var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");

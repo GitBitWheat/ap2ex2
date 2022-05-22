@@ -11,4 +11,7 @@ public interface IUserService
     public void AddContacts(string id1, string id2);
     public bool doesUserExist(string id);
     public void addMessage(Message message);
+    public bool isContactOfUser(string userId, string contactId);
+    public List<Message>? getMessagesBetweenTwoUsers(string id1, string id2);
+    public void SendMessage(string message, string sentFromId, string sendToId);
 }

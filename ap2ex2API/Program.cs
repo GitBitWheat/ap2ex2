@@ -85,3 +85,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+//TO DO: API URLs should be the same as in the instructions.
