@@ -1,11 +1,10 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
-using ap2ex2.Services;
-using ap2ex2.Models;
+using Services;
+using Domain;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
-
 
 namespace ap2ex2.Controllers
 {
@@ -13,16 +12,9 @@ namespace ap2ex2.Controllers
     {
         private readonly IUserService _service;
 
-        /* This is the constructor that should be used but I'm not sure how to do it
         public UsersController(IUserService service)
         {
             _service = service;
-        }
-        */
-        public UsersController()
-        {
-            _service = new UserService();
-
         }
         
         // GET: UsersController/Index
@@ -66,31 +58,28 @@ namespace ap2ex2.Controllers
         // POST: UsersController/Signup
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Signup([Bind("Username,Nickname,Password,Pfp")] User user)
+        public ActionResult Signup([Bind("Username,Nickname,Password")] User user)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            /*
-             * Checking if there already exists a user with this username...
-             */
-            _service.AddUser(user);
-            try
+            if (_service.doesUsernameExist(user.Username))
             {
-                return RedirectToAction(nameof(Login));
-            }
-            catch
-            {
+                ViewData["usernameAlreadyExists"] = true;
                 return View();
             }
+
+            _service.AddUser(user);
+            return RedirectToAction(nameof(Login));
         }
 
         // GET: UsersController/Details
         public ActionResult Details(int id)
         {
-            return View(_service.GetUser(id));
+            User user = _service.GetUser(id);
+            return View(user);
         }
         // private async void SessionSignIn(User account)
         // {
@@ -109,10 +98,16 @@ namespace ap2ex2.Controllers
         //         authProperties);
         // }
 
-        public ActionResult GetContacts(int id)
+        public ActionResult GetContacts()
         {
-            var contacts = _service.GetContacts(id);
-            return Json(contacts);
+            int? loggedUserId = HttpContext.Session.GetInt32("id");
+            if (loggedUserId == null)
+                return NotFound();
+            else
+            {
+                var contacts = _service.GetContacts((int) loggedUserId);
+                return Json(contacts);
+            }
         }
     }
 }

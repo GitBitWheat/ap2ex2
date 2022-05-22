@@ -1,5 +1,5 @@
-using ap2ex2.Models;
-namespace ap2ex2.Services;
+using Domain;
+namespace Services;
 
 public interface IUserService
 {
@@ -10,4 +10,6 @@ public interface IUserService
     int AddUser(User user);
     public List<User>? GetContacts(int id);
     public void AddContacts(int? id1, int id2);
+    public bool doesUsernameExist(string username);
+    public void addMessage(Message message);
 }

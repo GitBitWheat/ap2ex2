@@ -1,3 +1,4 @@
+@using Domain;
 @model User
 
 @{
@@ -8,7 +9,7 @@
     <script src="~/js/signup.js"></script>
 }
 
-<form asp-action="Signup" id="signupForm">
+<form asp-action="Signup" id="signupForm" enctype="multipart/form-data">
 <div class="formBox">
     <div class="logo">
             <h1><i class="bi bi-whatsapp"></i></h1>
@@ -18,6 +19,13 @@
             <div class="col-sm-10">
                 <input asp-for="Username" type="text" class="form-control" id="inputUsername-signup">
                 <span asp-validation-for="Username" class="text-danger"></span>
+                @if (ViewBag.usernameAlreadyExists != null)
+                {
+                    @if (ViewBag.usernameAlreadyExists)
+                    {
+                        <span asp-validation-for="Username" class="text-danger">There already exists a user with this username.</span>
+                    }
+                }
             </div>
         </div>
         <div class="row mb-3">
@@ -25,13 +33,6 @@
             <div class="col-sm-10">
                 <input asp-for="Nickname" type="text" class="form-control" id="inputNickname">
                 <span asp-validation-for="Nickname" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <label asp-for="Pfp" class="col-sm-2 col-form-label"></label>
-            <div class="col-sm-10">
-                <input asp-for="Pfp" type="file" accept="image/*" class="form-control" id="inputPfp">
-                <span asp-validation-for="Pfp" class="text-danger"></span>
             </div>
         </div>
         <div class="row mb-3">

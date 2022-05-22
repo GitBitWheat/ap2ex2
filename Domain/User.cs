@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ap2ex2.Models
+namespace Domain
 {
     public class User
     {
         public int Id { get; set; }
-        
+
         [Required(ErrorMessage = "A username is required")]
         [DataType(DataType.Text)]
         public string? Username { get; set; }
@@ -20,12 +20,11 @@ namespace ap2ex2.Models
         public string? Password { get; set; }
 
         [Display(Name = "Profile picture")]
-        [DataType(DataType.ImageUrl)]
-        public string? Pfp { get; set; }
 
         public List<User> Contacts { get; set; } = new List<User>();
-        
-        public List<Message> Messages { get; set; } = new List<Message>();
+
+        public Dictionary<int, List<Message>> Messages { get; set; } = new Dictionary<int, List<Message>>();
+
         public User UserInChat { get; set; }
     }
 }

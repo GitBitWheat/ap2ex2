@@ -1,4 +1,4 @@
-namespace ap2ex2.Models
+namespace Domain
 {
     public class ErrorViewModel
     {

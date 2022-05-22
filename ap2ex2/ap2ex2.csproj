@@ -26,5 +26,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="wwwroot\img" />
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 </Project>

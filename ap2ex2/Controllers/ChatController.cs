@@ -1,7 +1,7 @@
 ﻿using System.Dynamic;
 using System.Runtime.CompilerServices;
-using ap2ex2.Models;
-using ap2ex2.Services;
+using Domain;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +13,11 @@ namespace ap2ex2.Controllers
     {
         private readonly IUserService _userService;
 
-        public ChatController()
+        public ChatController(IUserService userService)
         {
-            _userService = new UserService();
+            _userService = userService;
         }
+
         // GET: ChatController
         public IActionResult Index()
         {
@@ -46,13 +47,34 @@ namespace ap2ex2.Controllers
         [HttpPost]
         public ActionResult SendMessage(string messageToSend)
         {
-            _userService.GetUser(HttpContext.Session.GetInt32("id")).Messages.Add(new Message()
-                {sentFrom = _userService.GetUser(HttpContext.Session.GetInt32("id")),
-                    sendTo = _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat, text = messageToSend});
-            
-            _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat.Messages.Add(new Message()
-                {sentFrom = _userService.GetUser(HttpContext.Session.GetInt32("id")),
-                    sendTo = _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat, text = messageToSend});
+            User loggedUser = _userService.GetUser(HttpContext.Session.GetInt32("id"));
+            Message message = new Message() { sentFrom = loggedUser, sendTo = loggedUser.UserInChat, text = messageToSend };
+
+            List<Message> loggedUserList;
+            if (loggedUser.Messages.TryGetValue(loggedUser.UserInChat.Id, out loggedUserList))
+            {
+                loggedUserList.Add(message);
+            }
+            else
+            {
+                loggedUserList = new List<Message>();
+                loggedUserList.Add(message);
+                loggedUser.Messages.Add(loggedUser.UserInChat.Id, loggedUserList);
+            }
+
+            List<Message> userInChatList;
+            if (loggedUser.Messages.TryGetValue(loggedUser.Id, out userInChatList))
+            {
+                userInChatList.Add(message);
+            }
+            else
+            {
+                userInChatList = new List<Message>();
+                userInChatList.Add(message);
+                loggedUser.UserInChat.Messages.Add(loggedUser.Id, userInChatList);
+            }
+
+
             return RedirectToAction("Index");
         }
     }

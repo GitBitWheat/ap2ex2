@@ -1,11 +1,8 @@
-﻿@model User
+﻿@using Domain;
+@model User
 
 @{
     ViewData["Title"] = "Chat";
-}
-
-@section Scripts{
-    <script src="~/js/load_contacts.js"></script>
 }
 
 <div class="chatBox">
@@ -100,30 +97,33 @@
             <div id="sentChat">
                 @if (Model.UserInChat != null)
                 {
-                    foreach (var message in Model.Messages)
-                    {
-                        if ((message.sentFrom.Id == Model.Id && message.sendTo.Id == Model.UserInChat.Id) ||
-                            (message.sentFrom.Id == Model.UserInChat.Id && message.sendTo.Id == Model.Id))
+                    List<Message> messageList;
+                    if (Model.Messages.TryGetValue(Model.UserInChat.Id, out messageList)) {
+                        foreach (var message in messageList)
                         {
-                            if (message.sentFrom.Id == Model.Id)
+                            if ((message.sentFrom.Id == Model.Id && message.sendTo.Id == Model.UserInChat.Id) ||
+                                (message.sentFrom.Id == Model.UserInChat.Id && message.sendTo.Id == Model.Id))
                             {
-                                <div class="row">
-                                    <div class="col">
-                                        <span class="usersSpeechBubble">
-                                            @message.text
-                                        </span>
+                                if (message.sentFrom.Id == Model.Id)
+                                {
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="usersSpeechBubble">
+                                                @message.text
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="row">
-                                    <div class="col">
-                                        <span class="othersSpeechBubble">
-                                            @message.text
-                                        </span>
+                                }
+                                else
+                                {
+                                    <div class="row">
+                                        <div class="col">
+                                            <span class="othersSpeechBubble">
+                                                @message.text
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             }
                         }
                     }

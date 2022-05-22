@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using ap2ex2.Models;
-namespace ap2ex2.Services;
+using Domain;
+namespace Services;
 
 public class UserService : IUserService
 {
     private static List<User> users = new List<User>()
     {
-        new User(){Id = 1, Username = "user1", Nickname = "First User", Password = "User1", Pfp = "..."},
-        new User(){Id = 2, Username = "user2", Nickname = "Second User", Password = "User2", Pfp = "..."},
-        new User(){Id = 3, Username = "user3", Nickname = "Third User", Password = "User3", Pfp = "..."}
+        new User(){Id = 1, Username = "user1", Nickname = "First User", Password = "User1" },
+        new User(){Id = 2, Username = "user2", Nickname = "Second User", Password = "User2"},
+        new User(){Id = 3, Username = "user3", Nickname = "Third User", Password = "User3"}
     };
 
     public List<User> GetAllUsers()
@@ -40,7 +40,7 @@ public class UserService : IUserService
             nextId = 1;
         else
             nextId = users.Max(user => user.Id) + 1;
-        users.Add(new User() {Id = nextId, Username = username, Nickname = nickname, Password = password, Pfp = image });
+        users.Add(new User() {Id = nextId, Username = username, Nickname = nickname, Password = password });
         return nextId;
     }
 
@@ -87,5 +87,15 @@ public class UserService : IUserService
         }
         user1.Contacts.Add(user2);
         user2.Contacts.Add(user1);
+    }
+
+    public bool doesUsernameExist(string username)
+    {
+        return GetUserByUsername(username) != null;
+    }
+
+    public void addMessage(Message message)
+    {
+        User? sentFromUser = GetUser(message.sentFrom.Id);
     }
 }

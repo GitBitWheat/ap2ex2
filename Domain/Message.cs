@@ -1,14 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ap2ex2.Models
+namespace Domain
 {
     public class Message
     {
         [Required]
-        public User? sentFrom { get; set; }
+        public User sentFrom { get; set; }
 
         [Required]
-        public User? sendTo { get; set; }
+        public User sendTo { get; set; }
 
         [Required]
         public string? text { get; set; }
