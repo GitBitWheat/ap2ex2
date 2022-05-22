@@ -1,8 +1,11 @@
-﻿@using Domain;
-@model User
+﻿@model User
 
 @{
     ViewData["Title"] = "Chat";
+}
+
+@section Scripts{
+    <script src="~/js/load_contacts.js"></script>
 }
 
 <div class="chatBox">
@@ -82,9 +85,9 @@
                                     <div class="fw-bold">@user.Name</div>
                                     <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
-                                        @if (user.MessagesD.ContainsKey((@Model.Id)))
+                                        @if (user.Messages.ContainsKey((@Model.Id)))
                                         {
-                                            @user.MessagesD[@Model.Id].Last().dateTime;
+                                            @user.Messages[@Model.Id].Last().dateTime;
                                         }
                                     </div>
                                 </div>

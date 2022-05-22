@@ -52,19 +52,19 @@ namespace ap2ex2.Controllers
                 User _loggedUser = _userService.GetUser(HttpContext.Session.GetString("id"));
                 User _userInChat = _loggedUser.UserInChat;
 
-                if (!_loggedUser.MessagesD.ContainsKey(_userInChat.Id))
+                if (!_loggedUser.Messages.ContainsKey(_userInChat.Id))
                 {
-                    _loggedUser.MessagesD.Add(_userInChat.Id, new List<Message>());
-                    _userInChat.MessagesD.Add(_loggedUser.Id, new List<Message>());
+                    _loggedUser.Messages.Add(_userInChat.Id, new List<Message>());
+                    _userInChat.Messages.Add(_loggedUser.Id, new List<Message>());
                 }
 
-                _loggedUser.MessagesD[_userInChat.Id].Add(new Message()
+                _loggedUser.Messages[_userInChat.Id].Add(new Message()
                 {
                     sentFrom = _loggedUser, sendTo = _userInChat,
                     text = messageToSend, dateTime = DateTime.Now
                 });
 
-                _userInChat.MessagesD[_loggedUser.Id].Add(new Message()
+                _userInChat.Messages[_loggedUser.Id].Add(new Message()
                 {
                     sentFrom = _loggedUser, sendTo = _userInChat,
                     text = messageToSend, dateTime = DateTime.Now
