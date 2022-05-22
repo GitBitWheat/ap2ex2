@@ -11,6 +11,6 @@ namespace ap2ex2API
         }
         public string Id { get; set; }
         public string Name { get; set; }
-        public string Server { get; set; }
+        public string Server { get; } = "I'll figure it out";
     }
 }

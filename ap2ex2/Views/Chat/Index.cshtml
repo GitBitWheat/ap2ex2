@@ -4,10 +4,6 @@
     ViewData["Title"] = "Chat";
 }
 
-@section Scripts{
-    <script src="~/js/load_contacts.js"></script>
-}
-
 <div class="chatBox">
     <div class="row">
         <div class="col-4 user">
@@ -85,9 +81,9 @@
                                     <div class="fw-bold">@user.Name</div>
                                     <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
-                                        @if (user.Messages.ContainsKey((@Model.Id)))
+                                        @if (user.MessagesD.ContainsKey((@Model.Id)))
                                         {
-                                            @user.Messages[@Model.Id].Last().dateTime;
+                                            @user.MessagesD[@Model.Id].Last().dateTime;
                                         }
                                     </div>
                                 </div>
