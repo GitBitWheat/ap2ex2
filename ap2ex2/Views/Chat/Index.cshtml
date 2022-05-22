@@ -1,8 +1,11 @@
-﻿@using Domain;
-@model User
+﻿@model User
 
 @{
     ViewData["Title"] = "Chat";
+}
+
+@section Scripts{
+    <script src="~/js/load_contacts.js"></script>
 }
 
 <div class="chatBox">
@@ -80,11 +83,11 @@
                                 <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
                                 <div class="ms-2 me-auto contactInfo">
                                     <div class="fw-bold">@user.Nickname</div>
-                                    <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
+                                    <div class="latestMessage">@if (user.Messages.ContainsKey((@Model.Id))){@user.Messages[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
-                                        @if (user.MessagesD.ContainsKey((@Model.Id)))
+                                        @if (user.Messages.ContainsKey((@Model.Id)))
                                         {
-                                            @user.MessagesD[@Model.Id].Last().dateTime;
+                                            @user.Messages[@Model.Id].Last().dateTime;
                                         }
                                     </div>
                                 </div>
@@ -99,12 +102,11 @@
             <div id="sentChat">
                 @if (Model.UserInChat != null)
                 {
-                    List<Message> messageList;
-                    if (Model.Messages.TryGetValue(Model.UserInChat.Id, out messageList)) {
-                        foreach (var message in messageList)
+                    foreach (var item in Model.Messages)
+                    {
+                        if (item.Key == @Model.UserInChat.Id)
                         {
-                            if ((message.sentFrom.Id == Model.Id && message.sendTo.Id == Model.UserInChat.Id) ||
-                                (message.sentFrom.Id == Model.UserInChat.Id && message.sendTo.Id == Model.Id))
+                            foreach (var message in item.Value)
                             {
                                 if (message.sentFrom.Id == Model.Id)
                                 {
