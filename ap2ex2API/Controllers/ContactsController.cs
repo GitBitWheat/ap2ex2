@@ -3,6 +3,7 @@ using Services;
 using Domain;
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.Net.Http.Headers;
 
 namespace ap2ex2API.Controllers
 {
@@ -21,16 +22,15 @@ namespace ap2ex2API.Controllers
         [HttpGet]
         public IEnumerable<ApiUser> Index()
         {
-            /*string loggedUserId = getLoggedUserId();
-            return Enumerable.Select<User, ApiUser>(_service.GetContacts((string) loggedUserId), user => new ApiUser(user)).ToArray();*/
-            return Enumerable.Select<User, ApiUser>(_service.GetContacts("user1"), user => new ApiUser(user)).ToArray();
+            string loggedUserId = getLoggedUserId();
+            return Enumerable.Select<User, ApiUser>(_service.GetContacts(loggedUserId), user => new ApiUser(user)).ToArray();
         }
 
         private string getLoggedUserId()
         {
-            var stream = "[encoded jwt]";
+            var _bearer_token = Request.Headers[HeaderNames.Authorization].ToString().Replace("Bearer ", "");
             var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(stream);
+            var jsonToken = handler.ReadToken(_bearer_token);
             var tokenS = jsonToken as JwtSecurityToken;
             return tokenS.Claims.First(claim => claim.Type == "UserId").Value;
         }
