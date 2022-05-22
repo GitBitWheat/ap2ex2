@@ -6,9 +6,9 @@ public class UserService : IUserService
 {
     private static List<User> users = new List<User>()
     {
-        new User(){Id = 1, Username = "user1", Nickname = "First User", Password = "User1" },
-        new User(){Id = 2, Username = "user2", Nickname = "Second User", Password = "User2"},
-        new User(){Id = 3, Username = "user3", Nickname = "Third User", Password = "User3"}
+        new User(){Id = "user1", Name = "First User", Password = "User1" },
+        new User(){Id = "user2", Name = "Second User", Password = "User2"},
+        new User(){Id = "user3", Name = "Third User", Password = "User3"}
     };
 
     public List<User> GetAllUsers()
@@ -16,42 +16,19 @@ public class UserService : IUserService
         return users;
     }
 
-    public User? GetUser(int? id)
+    public User? GetUser(string id)
     {
-        return users.Find(user => user.Id == id);
+        return users.Find(user => user.Id.Equals(id));
     }
 
-    public int AddUser(User user)
+    public void AddUser(User user)
     {
-        int nextId;
-        if (users.Count == 0)
-            nextId = 1;
-        else
-            nextId = users.Max(user => user.Id) + 1;
-        user.Id = nextId;
         users.Add(user);
-        return nextId;
-    }
-
-    public int AddUser(string username, string nickname, string password, string image)
-    {
-        int nextId;
-        if (users.Count == 0)
-            nextId = 1;
-        else
-            nextId = users.Max(user => user.Id) + 1;
-        users.Add(new User() {Id = nextId, Username = username, Nickname = nickname, Password = password });
-        return nextId;
-    }
-
-    public User? GetUserByUsername(string username)
-    {
-        return users.Find(user => user.Username == username);
     }
 
     public bool Login(string username, string password)
     {
-        User? user = GetUserByUsername(username);
+        User? user = GetUser(username);
         if (user != null && user.Password == password)
         {
             return true;
@@ -60,7 +37,7 @@ public class UserService : IUserService
         return false;
     }
 
-    public List<User>? GetContacts(int id)
+    public List<User>? GetContacts(string id)
     {
         User? user = GetUser(id);
         if (null == user)
@@ -69,7 +46,7 @@ public class UserService : IUserService
             return user.Contacts;
     }
 
-    public void AddContacts(int? id1, int id2)
+    public void AddContacts(string id1, string id2)
     {
         if (id1 == id2)
         {
@@ -89,9 +66,9 @@ public class UserService : IUserService
         user2.Contacts.Add(user1);
     }
 
-    public bool doesUsernameExist(string username)
+    public bool doesUserExist(string username)
     {
-        return GetUserByUsername(username) != null;
+        return GetUser(username) != null;
     }
 
     public void addMessage(Message message)

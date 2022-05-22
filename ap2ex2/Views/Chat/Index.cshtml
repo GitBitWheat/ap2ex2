@@ -10,7 +10,7 @@
         <div class="col-4 user">
             <span id="user-info">
                 <img src="~/img/defaultProfile.jpeg" id="loggedUserImage" style="width: 60px; border-radius: 50%; margin-right: 5px;">
-                @Model.Nickname
+                @Model.Name
             </span>
             <!-- Button trigger modal -->
             <button type="button" class="btn transparentButton" id="addContact" data-bs-toggle="modal"
@@ -49,7 +49,7 @@
             {
                 <div class="col">
                     <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 5px;">
-                    @Model.UserInChat.Nickname
+                    @Model.UserInChat.Name
                 </div>
             }
         </div>
@@ -79,7 +79,7 @@
                             <li class="list-group-item d-flex justify-content-between align-items-start">
                                 <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
                                 <div class="ms-2 me-auto contactInfo">
-                                    <div class="fw-bold">@user.Nickname</div>
+                                    <div class="fw-bold">@user.Name</div>
                                     <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
                                         @if (user.MessagesD.ContainsKey((@Model.Id)))
@@ -100,13 +100,13 @@
                 @if (Model.UserInChat != null)
                 {
                     List<Message> messageList;
-                    if (Model.Messages.TryGetValue(Model.UserInChat.Id, out messageList)) {
+                    if (Model.MessagesD.TryGetValue(Model.UserInChat.Id, out messageList)) {
                         foreach (var message in messageList)
                         {
-                            if ((message.sentFrom.Id == Model.Id && message.sendTo.Id == Model.UserInChat.Id) ||
-                                (message.sentFrom.Id == Model.UserInChat.Id && message.sendTo.Id == Model.Id))
+                            if ((message.sentFrom.Id.Equals(Model.Id) && message.sendTo.Id.Equals(Model.UserInChat.Id)) ||
+                                (message.sentFrom.Id.Equals(Model.UserInChat.Id) && message.sendTo.Id.Equals(Model.Id)))
                             {
-                                if (message.sentFrom.Id == Model.Id)
+                                if (message.sentFrom.Id.Equals(Model.Id))
                                 {
                                     <div class="row">
                                         <div class="col">

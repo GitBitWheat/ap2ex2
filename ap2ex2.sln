@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{4ECD8A8E-C061-440F-A829-46F8A506B1F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ap2ex2API", "ap2ex2API\ap2ex2API.csproj", "{C96DD43A-26E1-4C70-B949-88ACA2DECC89}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{4ECD8A8E-C061-440F-A829-46F8A506B1F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ECD8A8E-C061-440F-A829-46F8A506B1F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ECD8A8E-C061-440F-A829-46F8A506B1F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C96DD43A-26E1-4C70-B949-88ACA2DECC89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C96DD43A-26E1-4C70-B949-88ACA2DECC89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C96DD43A-26E1-4C70-B949-88ACA2DECC89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C96DD43A-26E1-4C70-B949-88ACA2DECC89}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

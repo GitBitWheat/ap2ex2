@@ -1,5 +1,4 @@
-﻿@using Domain;
-@model List<User>
+﻿@model List<User>
 
 <div class="formBox">
 <a asp-action="Login" class="btn btn-primary">Logout</a>
@@ -7,7 +6,6 @@
     <thead>
     <tr>
         <th>Id</th>
-        <th>UserName</th>
         <th>NickName</th>
         <th>Password</th>
         <th>Details</th>
@@ -18,8 +16,7 @@
         {
             <tr>
                 <td>@user.Id</td>
-                <td>@user.Username</td>
-                <td>@user.Nickname</td>
+                <td>@user.Name</td>
                 <td>@user.Password</td>
                 <td><a asp-action="Details" asp-route-id="@user.Id" class="btn btn-primary">Details</a></td>
             </tr>

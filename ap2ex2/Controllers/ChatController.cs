@@ -21,26 +21,26 @@ namespace ap2ex2.Controllers
         // GET: ChatController
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("username") == null)
+            if (HttpContext.Session.GetString("id") == null)
             {
                 return RedirectToAction("Login", "Users");
             }
-            return View(_userService.GetUser(HttpContext.Session.GetInt32("id")));
+            return View(_userService.GetUser(HttpContext.Session.GetString("id")));
         }
         
         [HttpPost]
         public ActionResult AddContact(string contactToAdd)
         {
-            User userToAdd = _userService.GetUserByUsername(contactToAdd);
-            _userService.AddContacts(HttpContext.Session.GetInt32("id"), userToAdd.Id);
+            User userToAdd = _userService.GetUser(contactToAdd);
+            _userService.AddContacts(HttpContext.Session.GetString("id"), userToAdd.Id);
             return RedirectToAction("Index");
         }
         
         [HttpPost]
-        public ActionResult ShowChat(int userId)
+        public ActionResult ShowChat(string userId)
         {
             User userChat = _userService.GetUser(userId);
-            _userService.GetUser(HttpContext.Session.GetInt32("id")).UserInChat = userChat;
+            _userService.GetUser(HttpContext.Session.GetString("id")).UserInChat = userChat;
             return RedirectToAction("Index");
         }
         
@@ -49,7 +49,7 @@ namespace ap2ex2.Controllers
         {
             if(messageToSend != "")
             {
-                User _loggedUser = _userService.GetUser(HttpContext.Session.GetInt32("id"));
+                User _loggedUser = _userService.GetUser(HttpContext.Session.GetString("id"));
                 User _userInChat = _loggedUser.UserInChat;
 
                 if (!_loggedUser.MessagesD.ContainsKey(_userInChat.Id))

@@ -36,8 +36,7 @@ namespace ap2ex2.Controllers
         {
             if (_service.Login(username, password))
             {
-                HttpContext.Session.SetInt32("id", _service.GetUserByUsername(username).Id);
-                HttpContext.Session.SetString("username", username);
+                HttpContext.Session.SetString("id", username);
                 return RedirectToAction(nameof(Index), "Chat");
             }
             else
@@ -58,14 +57,14 @@ namespace ap2ex2.Controllers
         // POST: UsersController/Signup
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Signup([Bind("Username,Nickname,Password")] User user)
+        public ActionResult Signup([Bind("Id,Name,Password")] User user)
         {
             if (!ModelState.IsValid)
             {
                 return View();
             }
 
-            if (_service.doesUsernameExist(user.Username))
+            if (_service.doesUserExist(user.Id))
             {
                 ViewData["usernameAlreadyExists"] = true;
                 return View();
@@ -76,7 +75,7 @@ namespace ap2ex2.Controllers
         }
 
         // GET: UsersController/Details
-        public ActionResult Details(int id)
+        public ActionResult Details(string id)
         {
             User user = _service.GetUser(id);
             return View(user);
@@ -100,12 +99,12 @@ namespace ap2ex2.Controllers
 
         public ActionResult GetContacts()
         {
-            int? loggedUserId = HttpContext.Session.GetInt32("id");
+            string? loggedUserId = HttpContext.Session.GetString("id");
             if (loggedUserId == null)
                 return NotFound();
             else
             {
-                var contacts = _service.GetContacts((int) loggedUserId);
+                var contacts = _service.GetContacts((string) loggedUserId);
                 return Json(contacts);
             }
         }
