@@ -78,12 +78,14 @@
                         <button type="submit" asp-action="ShowChat" asp-route-userId="@user.Id" style="width: 100%; border: none; padding: 0">
                             <li class="list-group-item d-flex justify-content-between align-items-start">
                                 <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
-                                <div class="ms-2 me-auto">
+                                <div class="ms-2 me-auto contactInfo">
                                     <div class="fw-bold">@user.Nickname</div>
-                                    <div>
-                                        
-                                    </div>
+                                    <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
+                                        @if (user.MessagesD.ContainsKey((@Model.Id)))
+                                        {
+                                            @user.MessagesD[@Model.Id].Last().dateTime;
+                                        }
                                     </div>
                                 </div>
                             </li>

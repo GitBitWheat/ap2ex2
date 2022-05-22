@@ -161,7 +161,9 @@ body {
     height: 60px;
     border-radius: 50%;
 }
-
+.contactInfo{
+    text-align: left;
+}
 .latest-message-date {
     font-size: 12px;
     color: grey;

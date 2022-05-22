@@ -12,5 +12,6 @@ namespace Domain
 
         [Required]
         public string? text { get; set; }
+        public DateTime dateTime { get; set; }
     }
 }
