@@ -1,5 +1,6 @@
 ﻿using System.Dynamic;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using Domain;
 using Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +10,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ap2ex2.Controllers
 {
+    [Authorize]
     public class ChatController : Controller
     {
         private readonly IUserService _userService;
@@ -19,20 +21,16 @@ namespace ap2ex2.Controllers
         }
 
         // GET: ChatController
+        // GET: ChatController
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("id") == null)
-            {
-                return RedirectToAction("Login", "Users");
-            }
-            return View(_userService.GetUser(HttpContext.Session.GetString("id")));
+            return View(_userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier)));
         }
         
         [HttpPost]
         public ActionResult AddContact(string contactToAdd)
         {
-            User userToAdd = _userService.GetUser(contactToAdd);
-            _userService.AddContacts(HttpContext.Session.GetString("id"), userToAdd.Id);
+            _userService.AddContacts(User.FindFirstValue(ClaimTypes.NameIdentifier), contactToAdd);
             return RedirectToAction("Index");
         }
         
@@ -40,7 +38,7 @@ namespace ap2ex2.Controllers
         public ActionResult ShowChat(string userId)
         {
             User userChat = _userService.GetUser(userId);
-            _userService.GetUser(HttpContext.Session.GetString("id")).UserInChat = userChat;
+            _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier)).UserInChat = userChat;
             return RedirectToAction("Index");
         }
         
@@ -49,7 +47,7 @@ namespace ap2ex2.Controllers
         {
             if(messageToSend != "")
             {
-                User loggedUser = _userService.GetUser(HttpContext.Session.GetString("id"));
+                User loggedUser = _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier));
                 User userInChat = loggedUser.UserInChat;
                 _userService.SendMessage(messageToSend, loggedUser.Id, userInChat.Id);
             }

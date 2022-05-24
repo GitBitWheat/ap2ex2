@@ -16,8 +16,6 @@ public class UserService : IUserService
         users.Add(user2);
         users.Add(user3);
         users.Add(user4);
-        AddContacts("user1", "user4");
-        SendMessage("hi", "user1", "user4");
     }
 
 public List<User> GetAllUsers()
@@ -103,7 +101,7 @@ public List<User> GetAllUsers()
         if (null == user1)
             return null;
         List<Message>? messageList;
-        if (user1.MessagesD.TryGetValue(id2, out messageList))
+        if (user1.Messages.TryGetValue(id2, out messageList))
             return messageList;
         else
             return null;
@@ -114,13 +112,13 @@ public List<User> GetAllUsers()
         User sentFromUser = GetUser(sentFromId);
         User sendToUser = GetUser(sendToId);
 
-        if (!sentFromUser.MessagesD.ContainsKey(sendToUser.Id))
+        if (!sentFromUser.Messages.ContainsKey(sendToUser.Id))
         {
-            sentFromUser.MessagesD.Add(sendToUser.Id, new List<Message>());
-            sendToUser.MessagesD.Add(sentFromUser.Id, new List<Message>());
+            sentFromUser.Messages.Add(sendToUser.Id, new List<Message>());
+            sendToUser.Messages.Add(sentFromUser.Id, new List<Message>());
         }
 
-        sentFromUser.MessagesD[sendToUser.Id].Add(new Message()
+        sentFromUser.Messages[sendToUser.Id].Add(new Message()
         {
             sentFrom = sentFromUser,
             sendTo = sendToUser,
@@ -128,7 +126,7 @@ public List<User> GetAllUsers()
             dateTime = DateTime.Now
         });
 
-        sendToUser.MessagesD[sentFromUser.Id].Add(new Message()
+        sendToUser.Messages[sentFromUser.Id].Add(new Message()
         {
             sentFrom = sentFromUser,
             sendTo = sendToUser,

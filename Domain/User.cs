@@ -21,7 +21,7 @@ namespace Domain
 
         public List<User> Contacts { get; set; } = new List<User>();
 
-        public Dictionary<string, List<Message>> MessagesD { get; set; } = new Dictionary<string, List<Message>>(StringComparer.Ordinal);
+        public Dictionary<string, List<Message>> Messages { get; set; } = new Dictionary<string, List<Message>>(StringComparer.Ordinal);
 
         public User UserInChat { get; set; }
     }

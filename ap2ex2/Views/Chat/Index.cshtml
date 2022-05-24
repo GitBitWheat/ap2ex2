@@ -4,12 +4,19 @@
     ViewData["Title"] = "Chat";
 }
 
+@section Scripts{
+    <script src="~/js/load_contacts.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+    <script src="~/js/ws.js"></script>
+}
+
 <div class="chatBox">
     <div class="row">
         <div class="col-4 user">
             <span id="user-info">
                 <img src="~/img/defaultProfile.jpeg" id="loggedUserImage" style="width: 60px; border-radius: 50%; margin-right: 5px;">
                 @Model.Name
+                <div id="userId" style="display: none;">@Model.Id</div>
             </span>
             <!-- Button trigger modal -->
             <button type="button" class="btn transparentButton" id="addContact" data-bs-toggle="modal"
@@ -46,11 +53,15 @@
         <div class="col-8 user" id="contactInChat">
             @if (@Model.UserInChat != null)
             {
-                <div class="col">
+                <span class="col">
                     <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile" style="width: 60px; height: 60px; border-radius: 50%; margin-right: 5px;">
                     @Model.UserInChat.Name
-                </div>
+                    <div id="userInChatId" style="display: none;">@Model.UserInChat.Id</div>
+                </span>
             }
+            <span class="col">
+                <button style="float: right; margin: 5px" type="submit"  class="btn btn-primary" onclick="location.href='@Url.Action("Logout", "Users")'">Logout</button>
+            </span>
         </div>
     </div>
     <div class="row" id="chatAndContactsRow">
@@ -79,11 +90,11 @@
                                 <img src="~/img/defaultProfile.jpeg" alt="Avatar" class="contact-profile">
                                 <div class="ms-2 me-auto contactInfo">
                                     <div class="fw-bold">@user.Name</div>
-                                    <div class="latestMessage">@if (user.MessagesD.ContainsKey((@Model.Id))){@user.MessagesD[@Model.Id].Last().text;}</div>
+                                    <div class="latestMessage">@if (user.Messages.ContainsKey((@Model.Id))){@user.Messages[@Model.Id].Last().text;}</div>
                                     <div class="latest-message-date">
-                                        @if (user.MessagesD.ContainsKey((@Model.Id)))
+                                        @if (user.Messages.ContainsKey((@Model.Id)))
                                         {
-                                            @user.MessagesD[@Model.Id].Last().dateTime;
+                                            @user.Messages[@Model.Id].Last().dateTime;
                                         }
                                     </div>
                                 </div>
@@ -99,7 +110,7 @@
                 @if (Model.UserInChat != null)
                 {
                     List<Message> messageList;
-                    if (Model.MessagesD.TryGetValue(Model.UserInChat.Id, out messageList)) {
+                    if (Model.Messages.TryGetValue(Model.UserInChat.Id, out messageList)) {
                         foreach (var message in messageList)
                         {
                             if ((message.sentFrom.Id.Equals(Model.Id) && message.sendTo.Id.Equals(Model.UserInChat.Id)) ||
@@ -234,8 +245,7 @@
                             <input type="text" class="form-control" id="message-to-send"
                                    placeholder="Type a message..." aria-label="Recipient's username"
                                    aria-describedby="button-addon2" name="messageToSend">
-                            <button type="submit" class="btn btn-outline-secondary" id="sendTextMessageButton"
-                                    asp-action="SendMessage">Send</button>
+                            <button type="submit" class="btn btn-outline-secondary" id="sendTextMessageButton">Send</button>
                         </div>
                         </form>
                     </div>
