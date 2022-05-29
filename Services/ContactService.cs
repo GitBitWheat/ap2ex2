@@ -18,11 +18,26 @@ namespace Services
 
         public List<Contact> GetContacts(string id)
         {
-            List<Contact>? requestedList = new List<Contact>();
-            if (contactsDict.TryGetValue(id, out requestedList))
-                return requestedList;
+            List<Contact>? contactList = new List<Contact>();
+            if (contactsDict.TryGetValue(id, out contactList))
+                return contactList;
             else
                 return new List<Contact>();
+        }
+
+        public bool GetContactOfId(string userId, string contactId, out Contact requestedContact)
+        {
+            Contact? foundContact = GetContacts(userId).Find(c => c.Id.Equals(contactId));
+            if (null != foundContact)
+            {
+                requestedContact = foundContact;
+                return true;
+            }
+            else
+            {
+                requestedContact = new Contact();
+                return false;
+            }
         }
 
         public bool AddContact(string userId, Contact newContact)

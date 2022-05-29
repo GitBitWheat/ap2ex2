@@ -5,6 +5,8 @@ public interface IContactService
 {
     public List<Contact> GetContacts(string id);
 
+    public bool GetContactOfId(string userId, string contactId, out Contact requestedContact);
+
     public bool AddContact(string userId, Contact newContact);
 
     public bool RemoveContact(string userId, string contactId);
