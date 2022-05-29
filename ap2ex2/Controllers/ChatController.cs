@@ -21,10 +21,11 @@ namespace ap2ex2.Controllers
         }
 
         // GET: ChatController
-        // GET: ChatController
         public IActionResult Index()
         {
-            return View(_userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            User loggedInUser;
+            _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier), out loggedInUser);
+            return View(loggedInUser);
         }
         
         [HttpPost]
@@ -37,11 +38,15 @@ namespace ap2ex2.Controllers
         [HttpPost]
         public ActionResult ShowChat(string userId)
         {
-            User userChat = _userService.GetUser(userId);
-            _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier)).UserInChat = userChat;
+            User loggedInUser, userInChat;
+            _userService.GetUser(userId, out userInChat);
+            _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier), out loggedInUser);
+
+            loggedInUser.UserInChat = userInChat;
             return RedirectToAction("Index");
         }
         
+        /*
         [HttpPost]
         public ActionResult SendMessage(string messageToSend)
         {
@@ -53,5 +58,6 @@ namespace ap2ex2.Controllers
             }
             return RedirectToAction("Index");
         }
+        */
     }
 }

@@ -44,7 +44,7 @@ namespace ap2ex2.Controllers
                 return View(); 
             }
 
-            if (_service.doesUserExist(user.Id))
+            if (_service.DoesUserExist(user.Id))
             {
                 ViewData["usernameAlreadyExists"] = true;
                 return View();
@@ -75,7 +75,10 @@ namespace ap2ex2.Controllers
         // GET: UsersController/Details
         public ActionResult Details(string id)
         {
-            User user = _service.GetUser(id);
+            User user;
+            if (!_service.GetUser(id, out user))
+                return NotFound();
+
             return View(user);
         }
   
@@ -100,19 +103,6 @@ namespace ap2ex2.Controllers
             };
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProp);
-        }
-        
-
-        public ActionResult GetContacts()
-        {
-            string? loggedUserId = HttpContext.Session.GetString("id");
-            if (loggedUserId == null)
-                return NotFound();
-            else
-            {
-                var contacts = _service.GetContacts((string) loggedUserId);
-                return Json(contacts);
-            }
         }
     }
 }

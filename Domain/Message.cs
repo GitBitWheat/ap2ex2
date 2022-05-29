@@ -4,14 +4,19 @@ namespace Domain
 {
     public class Message
     {
-        [Required]
-        public User sentFrom { get; set; }
+        [Key]
+        public int Id { get; set; }
 
         [Required]
-        public User sendTo { get; set; }
+        public string? Content { get; set; }
 
         [Required]
-        public string? text { get; set; }
-        public DateTime dateTime { get; set; }
+        public DateTime Created { get; set; }
+
+        [Required]
+        public User SentFrom { get; set; }
+
+        [Required]
+        public User SendTo { get; set; }
     }
 }

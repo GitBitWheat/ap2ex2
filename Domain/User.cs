@@ -12,7 +12,7 @@ namespace Domain
 
         [Required(ErrorMessage = "A nickname is required")]
         [DataType(DataType.Text)]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "A password is required")]
         [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$", ErrorMessage = "Passwords contain at least 1 lower case letter, 1 uppercase letter and 1 digit")]
@@ -23,6 +23,8 @@ namespace Domain
 
         public Dictionary<string, List<Message>> Messages { get; set; } = new Dictionary<string, List<Message>>(StringComparer.Ordinal);
 
-        public User UserInChat { get; set; }
+        public User? UserInChat { get; set; }
+
+        public string Server { get; set;  } = "I'll figure it out";
     }
 }

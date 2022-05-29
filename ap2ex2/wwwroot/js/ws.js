@@ -1,4 +1,7 @@
 
+//The code is wrapped in a self invoked function in order to avoid conflicts with the global namespace.
+(function () {
+
 var connection = new signalR.HubConnectionBuilder().withUrl("/MessageHub").build();
 connection.start()
 
@@ -32,12 +35,14 @@ document.getElementById("sendTextMessageButton").addEventListener("click", funct
     const rowDiv = document.createElement("div");
     const colDiv = document.createElement("div");
     const spanD = document.createElement("span");
-    
+
+    const messageText = document.createTextNode(msg);
+
     rowDiv.className = "row";
     colDiv.className = "col";
     spanD.className = "usersSpeechBubble";
 
-    spanD.appendChild(message);
+    spanD.appendChild(messageText);
     colDiv.appendChild(spanD);
     rowDiv.appendChild(colDiv);
     document.getElementById("sentChat").appendChild(rowDiv);
@@ -45,5 +50,4 @@ document.getElementById("sendTextMessageButton").addEventListener("click", funct
     event.preventDefault();
 });
 
-
-
+})();

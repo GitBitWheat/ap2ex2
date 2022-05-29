@@ -1,3 +1,4 @@
+using ap2ex2API.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Services;
@@ -9,28 +10,28 @@ namespace ap2ex2API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class LoginController : ControllerBase
     {
         private IConfiguration _configuration;
         private readonly IUserService _service;
 
-        public UsersController(IConfiguration configuration, IUserService service)
+        public LoginController(IConfiguration configuration, IUserService service)
         {
             _configuration = configuration;
             _service = service;
         }
 
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login([FromBody] LoginModel loginModel)
         {
-            if (_service.Login(username, password))
+            if (_service.Login(loginModel.Username, loginModel.Password))
             {
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, _configuration["JWTParams:Subject"]),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-                    new Claim("UserId", username)
+                    new Claim("UserId", loginModel.Username)
                 };
 
                 var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTParams:SecretKey"]));
@@ -46,7 +47,7 @@ namespace ap2ex2API.Controllers
             }
             else
             {
-                return NotFound();
+                return Forbid();
             }
         }
     }
