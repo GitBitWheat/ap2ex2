@@ -12,12 +12,12 @@ namespace ap2ex2API.Models
 
         public bool Sent { get; set; }
 
-        public MessageApiModel(Message message, string senderId)
+        public MessageApiModel(Message message, string loggedUserId)
         {
             Id = message.Id;
             Content = message.Content;
             Created = message.Created;
-            Sent = senderId.Equals(message.SentFrom.Id);
+            Sent = loggedUserId.Equals(message.SentFrom);
         }
     }
 }

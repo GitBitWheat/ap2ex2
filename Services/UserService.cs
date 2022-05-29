@@ -205,8 +205,8 @@ public class UserService : IUserService
             Id = ++msgCount,
             Content = message,
             Created = creationTime,
-            SentFrom = sentFromUser,
-            SendTo = sendToUser
+            SentFrom = sentFromUser.Id,
+            SendTo = sendToUser.Id
         });
 
         return true;

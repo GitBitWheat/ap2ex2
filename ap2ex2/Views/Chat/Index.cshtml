@@ -112,7 +112,7 @@
                     if (Model.Messages.TryGetValue(Model.UserInChat.Id, out messageList)) {
                         foreach (Message message in messageList)
                         {
-                            if (Model.Id.Equals(message.SentFrom.Id))
+                            if (Model.Id.Equals(message.SentFrom))
                             {
                                 <div class="row">
                                     <div class="col">

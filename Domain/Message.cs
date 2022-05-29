@@ -14,9 +14,9 @@ namespace Domain
         public DateTime Created { get; set; }
 
         [Required]
-        public User SentFrom { get; set; }
+        public string SentFrom { get; set; }
 
         [Required]
-        public User SendTo { get; set; }
+        public string SendTo { get; set; }
     }
 }
