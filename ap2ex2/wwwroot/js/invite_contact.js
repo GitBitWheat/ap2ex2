@@ -3,7 +3,7 @@
         const body = {
             From: loggedUserId,
             To: contactId,
-            Server: contactServer
+            Server: 'localhost:5183'
         };
 
         $.ajax({

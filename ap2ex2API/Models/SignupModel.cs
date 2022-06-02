@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Domain;
 
-namespace Domain
+namespace ap2ex2API.Models
 {
-    public class User
+    public class SignupModel
     {
         [Key]
         [Required(ErrorMessage = "A username is required")]
@@ -17,8 +18,16 @@ namespace Domain
         [Required(ErrorMessage = "A password is required")]
         [RegularExpression("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).+$", ErrorMessage = "Passwords contain at least 1 lower case letter, 1 uppercase letter and 1 digit")]
         [DataType(DataType.Password)]
-        public string? Password { get; set; }
+        public string Password { get; set; }
 
-        public List<Contact> Contacts { get; set; } = new List<Contact>();
+        public User ConvertToUser()
+        {
+            return new User()
+            {
+                Id = Id,
+                Name = Name,
+                Password = Password
+            };
+        }
     }
 }

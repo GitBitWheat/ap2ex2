@@ -37,7 +37,7 @@ namespace ap2ex2.Controllers
         // POST: UsersController/Signup
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Signup([Bind("Username,Name,Password")] User user)
+        public ActionResult Signup([Bind("Id,Name,Password")] User user)
         {
             if (!ModelState.IsValid)
             {

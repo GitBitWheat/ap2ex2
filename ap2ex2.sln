@@ -14,7 +14,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{4ECD8A8E-C061-440F-A829-46F8A506B1F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ap2ex2API", "ap2ex2API\ap2ex2API.csproj", "{C96DD43A-26E1-4C70-B949-88ACA2DECC89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ap2ex2API", "ap2ex2API\ap2ex2API.csproj", "{C96DD43A-26E1-4C70-B949-88ACA2DECC89}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UpdatedEx1", "UpdatedEx1", "{DE4F627B-284E-43BD-97B5-B27EF65D1EA7}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\index.html = ..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\index.html
+		..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\main.js = ..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\main.js
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

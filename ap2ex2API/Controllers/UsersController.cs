@@ -10,18 +10,18 @@ namespace ap2ex2API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private IConfiguration _configuration;
         private readonly IUserService _service;
 
-        public LoginController(IConfiguration configuration, IUserService service)
+        public UsersController(IConfiguration configuration, IUserService service)
         {
             _configuration = configuration;
             _service = service;
         }
 
-        [HttpPost]
+        [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel loginModel)
         {
             if (_service.Login(loginModel.Username, loginModel.Password))
@@ -49,6 +49,19 @@ namespace ap2ex2API.Controllers
             {
                 return Forbid();
             }
+        }
+
+        [HttpPost("signup")]
+        public IActionResult Signup([FromBody] SignupModel signupModel)
+        {
+            if (!ModelState.IsValid)
+                return Forbid();
+
+            if (_service.DoesUserExist(signupModel.Id))
+                return Forbid();
+
+            _service.AddUser(signupModel.ConvertToUser());
+            return Ok();
         }
     }
 }
