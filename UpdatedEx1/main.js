@@ -2,7 +2,7 @@ $(document).ready(function () {
     var token = '';
     var contacts = [];
     var messages = [];
-
+    //plz
     function loginReq(userId, password) {
         const body = {
             Username: userId,
