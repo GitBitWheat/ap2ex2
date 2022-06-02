@@ -1,6 +1,4 @@
-﻿using Domain;
-
-namespace ap2ex2API.Models
+﻿namespace ap2ex2API.Models
 {
     public class ContactDetailsModel
     {

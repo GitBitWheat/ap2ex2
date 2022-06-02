@@ -13,26 +13,28 @@ namespace ap2ex2API.Controllers
     [Route("api/[controller]")]
     public class ContactsController : ControllerBase
     {
-        private readonly IContactService _service;
+        private readonly IUserService _service;
 
-        public ContactsController(IContactService service)
+        public ContactsController(IUserService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public IEnumerable<Contact> GetAllContacts()
+        public IEnumerable<ContactApiModel> GetAllContacts()
         {
             string loggedUserId = GetLoggedUserId();
-            return _service.GetContacts(loggedUserId).ToArray();
+            List<Contact> contactList;
+            _service.GetContacts(loggedUserId, out contactList);
+            return Enumerable.Select(contactList, c => new ContactApiModel(c)).ToArray();
         }
 
         [HttpPost]
-        public IActionResult AddContact([FromBody] Contact newContact)
+        public IActionResult AddContact([FromBody] NewContactModel newContact)
         {
             string loggedUserId = GetLoggedUserId();
 
-            if (!_service.AddContact(loggedUserId, newContact))
+            if (!_service.AddContact(loggedUserId, newContact.ConvertToContact()))
                 return Forbid();
 
             return CreatedAtAction(nameof(AddContact), new { Id = newContact.Id });
@@ -47,21 +49,18 @@ namespace ap2ex2API.Controllers
             if (!_service.GetContactOfId(loggedUserId, id, out contact))
                 return NotFound();
 
-            return Ok(contact);
+            return Ok(new ContactApiModel(contact));
         }
 
         [HttpPut("{id}")]
         public IActionResult ChangeContactDetails([FromBody] ContactDetailsModel contactDetails, string id)
         {
             string loggedUserId = GetLoggedUserId();
-            Contact contact;
 
-            if (!_service.GetContactOfId(loggedUserId, id, out contact))
+            if (_service.UpdateContactOfId(loggedUserId, id, contactDetails.Name, contactDetails.Server))
+                return NoContent();
+            else
                 return NotFound();
-
-            contact.Name = contactDetails.Name;
-            contact.Server = contactDetails.Server;
-            return NoContent();
         }
 
         [HttpDelete("{id}")]
@@ -81,7 +80,7 @@ namespace ap2ex2API.Controllers
             string loggedUserId = GetLoggedUserId();
             List<Message> msgList;
 
-            if (_service.GetMessagesBetweenContacts(loggedUserId, id, out msgList))
+            if (_service.GetMessagesBetweenUserAndContact(loggedUserId, id, out msgList))
                 return Ok(Enumerable.Select(msgList, message => new MessageApiModel(message, loggedUserId)).ToArray());
             else
                 return NotFound();
@@ -104,7 +103,7 @@ namespace ap2ex2API.Controllers
             string loggedUserId = GetLoggedUserId();
             Message message;
 
-            if (_service.GetMessageOfIdBetweenContacts(loggedUserId, id, id2, out message))
+            if (_service.GetMessageOfIdBetweenUserAndContact(loggedUserId, id, id2, out message))
                 return Ok(new MessageApiModel(message, loggedUserId));
             else
                 return NotFound();
@@ -114,13 +113,11 @@ namespace ap2ex2API.Controllers
         public IActionResult ChangeMessageDetails([FromBody] MessageContentModel messageContent, string id, int id2)
         {
             string loggedUserId = GetLoggedUserId();
-            Message message;
 
-            if (!_service.GetMessageOfIdBetweenContacts(loggedUserId, id, id2, out message))
+            if (_service.UpdateMessageOfIdBetweenUserAndContact(loggedUserId, id, id2, messageContent.Content))
+                return NoContent();
+            else
                 return NotFound();
-
-            message.Content = messageContent.Content;
-            return NoContent();
         }
 
         [HttpDelete("{id}/messages/{id2}")]

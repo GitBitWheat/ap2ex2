@@ -31,7 +31,12 @@ namespace ap2ex2.Controllers
         [HttpPost]
         public ActionResult AddContact(string contactToAdd)
         {
-            _userService.AddContacts(User.FindFirstValue(ClaimTypes.NameIdentifier), contactToAdd);
+            _userService.AddContact(User.FindFirstValue(ClaimTypes.NameIdentifier), new Contact()
+            {
+                Id = contactToAdd,
+                Name = contactToAdd,
+                Server = server
+            });
             return RedirectToAction("Index");
         }
         
@@ -45,7 +50,7 @@ namespace ap2ex2.Controllers
             loggedInUser.UserInChat = userInChat;
             return RedirectToAction("Index");
         }
-        
+
         /*
         [HttpPost]
         public ActionResult SendMessage(string messageToSend)

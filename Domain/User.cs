@@ -19,9 +19,7 @@ namespace Domain
         [DataType(DataType.Password)]
         public string? Password { get; set; }
 
-        public List<User> Contacts { get; set; } = new List<User>();
-
-        public Dictionary<string, List<Message>> Messages { get; set; } = new Dictionary<string, List<Message>>(StringComparer.Ordinal);
+        public List<Contact> Contacts { get; set; } = new List<Contact>();
 
         public User? UserInChat { get; set; }
 

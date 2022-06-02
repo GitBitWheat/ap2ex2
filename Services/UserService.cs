@@ -24,9 +24,14 @@ public class UserService : IUserService
         users.Add(user2);
         users.Add(user3);
         users.Add(user4);
-        AddContacts("user1", "user2");
+        Contact contact1 = new Contact(user1);
+        Contact contact2 = new Contact(user2);
+        AddContact("user1", contact2);
+        AddContact("user2", contact1);
         SendMessage("I'm user1", "user1", "user2");
+        ReceiveMessage("I'm user1", "user1", "user2");
         SendMessage("I'm user2", "user2", "user1");
+        ReceiveMessage("I'm user2", "user2", "user1");
     }
     //Delete later
 
@@ -42,9 +47,9 @@ public class UserService : IUserService
         return users;
     }
 
-    public bool GetUser(string id, out User user)
+    public bool GetUser(string userId, out User user)
     {
-        User? foundUser = users.Find(user => user.Id.Equals(id));
+        User? foundUser = users.Find(user => user.Id.Equals(userId));
         if (foundUser != null)
         {
             user = foundUser;
@@ -71,107 +76,119 @@ public class UserService : IUserService
         return user.Password == password;
     }
 
-    public bool GetContacts(string id, out List<User> contactList)
+    public bool DoesUserExist(string userId)
+    {
+        return users.Exists(u => u.Id.Equals(userId));
+    }
+
+    public bool GetContacts(string userId, out List<Contact> contactList)
     {
         User user;
-        if (!GetUser(id, out user))
+        if (!GetUser(userId, out user))
         {
-            contactList = new List<User>();
+            contactList = new List<Contact>();
+            return false;
+        }
+        else
+        {
+            contactList = user.Contacts;
+            return true;
+        }
+    }
+
+    public bool GetContactOfId(string userId, string contactId, out Contact requestedContact)
+    {
+        List<Contact> contactList;
+        if (!GetContacts(userId, out contactList))
+        {
+            requestedContact = new Contact();
             return false;
         }
 
-        contactList = user.Contacts;
+        Contact? foundContact = contactList.Find(c => c.Id.Equals(contactId));
+        if (null != foundContact)
+        {
+            requestedContact = foundContact;
+            return true;
+        }
+        else
+        {
+            requestedContact = new Contact();
+            return false;
+        }
+    }
+
+    public bool UpdateContactOfId(string userId, string contactId, string name, string server)
+    {
+        Contact contact;
+        if (!GetContactOfId(userId, contactId, out contact))
+            return false;
+
+        contact.Name = name;
+        contact.Server = server;
         return true;
     }
 
-    public bool AddContacts(string id1, string id2)
+    public bool AddContact(string userId, Contact newContact)
     {
-        if (id1.Equals(id2))
-        {
+        List<Contact> contactList;
+        if (!GetContacts(userId, out contactList))
             return false;
-        }
 
-        User user1, user2;
-        if (!GetUser(id1, out user1) || !GetUser(id2, out user2))
-        {
+        if (contactList.Exists(c => c.Id.Equals(newContact.Id)))
             return false;
-        }
-
-        if (user1.Contacts.Contains(user2))
+        else
         {
-             return false;
+            contactList.Add(newContact);
+            return true;
         }
-
-        user1.Contacts.Add(user2);
-        user2.Contacts.Add(user1);
-        return true;
     }
 
-    public bool RemoveContacts(string id1, string id2)
+    public bool RemoveContact(string userId, string contactId)
     {
-        if (id1.Equals(id2))
-        {
+        List<Contact> contactList;
+        if (!GetContacts(userId, out contactList))
             return false;
-        }
 
-        User user1, user2;
-        if (!GetUser(id1, out user1) || !GetUser(id2, out user2))
-        {
-            return false;
-        }
-
-        bool isUser2ContactOfUser1 = user1.Contacts.Remove(user2);
-        bool isUser1ContactOfUser2 = user2.Contacts.Remove(user1);
-        return isUser2ContactOfUser1 && isUser1ContactOfUser2;
-    }
-
-    public bool DoesUserExist(string username)
-    {
-        User user;
-        return GetUser(username, out user);
+        return contactList.RemoveAll(c => c.Id.Equals(contactId)) > 0;
     }
 
     public bool IsContactOfUser(string userId, string contactId)
     {
-        User contact;
-        if (!GetUser(contactId, out contact))
-        {
-            return false;
-        }
-
-        List<User> contactsList;
-        if (GetContacts(userId, out contactsList))
-            return contactsList.Contains(contact);
+        User user;
+        if (GetUser(userId, out user))
+            return user.Contacts.Exists(c => c.Id.Equals(contactId));
         else
             return false;
     }
 
-    public bool GetMessagesBetweenTwoUsers(string userId, string contactId, out List<Message> msgList)
+
+
+    public bool GetMessagesBetweenUserAndContact(string userId, string contactId, out List<Message> msgList)
     {
-        User user;
-        if (!GetUser(userId, out user) || !IsContactOfUser(userId, contactId))
+        Contact contact;
+        if (!GetContactOfId(userId, contactId, out contact))
         {
             msgList = new List<Message>();
             return false;
-
         }
-
-        if (!user.Messages.TryGetValue(contactId, out msgList))
-            msgList = new List<Message>();
-
-        return true;
+        else
+        {
+            msgList = contact.Messages;
+            return true;
+        }
     }
 
-    public bool GetMessageOfIdBetweenTwoUsers(string userId1, string userId2, int messageId, out Message requestedMessage)
+    public bool GetMessageOfIdBetweenUserAndContact(string userId, string contactId, int messageId, out Message requestedMessage)
     {
-        List<Message> msgList = new List<Message>();
-        if (!GetMessagesBetweenTwoUsers(userId1, userId2, out msgList))
+        List<Message> msgList;
+        if (!GetMessagesBetweenUserAndContact(userId, contactId, out msgList))
         {
             requestedMessage = new Message();
             return false;
         }
 
-        Message? foundMessage = msgList.Find(message => { return message.Id == messageId; });
+        Message? foundMessage = msgList.Find(m => m.Id.Equals(messageId));
         if (null == foundMessage)
         {
             requestedMessage = new Message();
@@ -184,44 +201,72 @@ public class UserService : IUserService
         }
     }
 
-    public bool SendMessage(string message, string sentFromId, string sendToId)
+    public bool UpdateMessageOfIdBetweenUserAndContact(string userId, string contactId, int messageId, string content)
     {
-        User sentFromUser, sendToUser;
+        Message message;
 
-        if (!GetUser(sentFromId, out sentFromUser) || !GetUser(sendToId, out sendToUser))
+        if (!GetMessageOfIdBetweenUserAndContact(userId, contactId, messageId, out message))
             return false;
 
-        List<Message> msgList;
-        if (!sentFromUser.Messages.TryGetValue(sendToUser.Id, out msgList))
-        {
-            msgList = new List<Message>();
-            sentFromUser.Messages.Add(sendToUser.Id, msgList);
-            sendToUser.Messages.Add(sentFromUser.Id, msgList);
-        }
+        message.Content = content;
+        return true;
+
+    }
+
+    public bool SendMessage(string messageContent, string sentFromUserId, string sendToContactId)
+    {
+        Contact contact;
+        if (!GetContactOfId(sentFromUserId, sendToContactId, out contact))
+            return false;
 
         DateTime creationTime = DateTime.Now;
-        msgList.Add(new Message()
+
+        contact.Messages.Add(new Message()
         {
             Id = ++msgCount,
-            Content = message,
+            Content = messageContent,
             Created = creationTime,
-            SentFrom = sentFromUser.Id,
-            SendTo = sendToUser.Id
+            SentFrom = sentFromUserId,
+            SendTo = sendToContactId
         });
+
+        contact.Last = messageContent;
+        contact.Lastdate = creationTime.ToString("s");
 
         return true;
     }
 
-    public bool RemoveMessage(string userId1, string userId2, int messageId)
+    public bool ReceiveMessage(string messageContent, string sentFromContactId, string sendToUserId)
     {
-        List<Message> msgList = new List<Message>();
-        if (!GetMessagesBetweenTwoUsers(userId1, userId2, out msgList))
+        Contact contact;
+        if (!GetContactOfId(sendToUserId, sentFromContactId, out contact))
             return false;
 
-        Message? foundMessage = msgList.Find(message => { return message.Id == messageId; });
-        if (null == foundMessage)
+        DateTime creationTime = DateTime.Now;
+
+        contact.Messages.Add(new Message()
+        {
+            Id = ++msgCount,
+            Content = messageContent,
+            Created = creationTime,
+            SentFrom = sentFromContactId,
+            SendTo = sendToUserId
+        });
+
+        contact.Last = messageContent;
+        contact.Lastdate = creationTime.ToString("s");
+
+        return true;
+    }
+
+    public bool RemoveMessage(string userId, string contactId, int messageId)
+    {
+        List<Message> msgList = new List<Message>();
+
+        //Returns false if the two IDs aren't contacts of each other
+        if (!GetMessagesBetweenUserAndContact(userId, contactId, out msgList))
             return false;
-        
-        return msgList.Remove(foundMessage);
+
+        return msgList.RemoveAll(m => m.Id.Equals(messageId)) > 0;
     }
 }

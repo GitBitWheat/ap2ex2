@@ -1,6 +1,5 @@
 
-//The code is wrapped in a self invoked function in order to avoid conflicts with the global namespace.
-(function () {
+$(function () {
 
 var connection = new signalR.HubConnectionBuilder().withUrl("/MessageHub").build();
 connection.start()
