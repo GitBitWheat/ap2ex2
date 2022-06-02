@@ -6,23 +6,17 @@ Ilay Daniel 326646650<br />
 Start by cloning the repository to visual studio.<br />
 Make sure:<br />
 
-<br />
-
 In the file:<br />
 ap2ex2/properties/launchSettings.json<br />
 Go to:<br />
 profiles -> ap2ex2 -> applicationUrl<br />
 Make sure the port is 5183<br />
 
-<br />
-
 In the file:<br />
 ap2ex2API/properties/launchSettings.json<br />
 Go to:<br />
 profiles -> ap2ex2API -> applicationUrl<br />
 Make sure the port is 5244<br />
-
-<br /><br />
 
 In order to run the web application, set ap2ex2 as start up project and start.<br />
 In order to run the web api, set ap2ex2API as start up project and start.<br />
