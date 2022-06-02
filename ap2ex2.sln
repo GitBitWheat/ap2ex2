@@ -16,10 +16,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Servic
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ap2ex2API", "ap2ex2API\ap2ex2API.csproj", "{C96DD43A-26E1-4C70-B949-88ACA2DECC89}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UpdatedEx1", "UpdatedEx1", "{DE4F627B-284E-43BD-97B5-B27EF65D1EA7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UpdatedEx1", "UpdatedEx1", "{942A07FA-019A-430B-A9DB-15F4A13E6472}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\index.html = ..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\index.html
-		..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\main.js = ..\..\..\Desktop\cs\advanced_programming_2\ex1_site\Whatsapp-Project\main.js
+		UpdatedEx1\index.html = UpdatedEx1\index.html
+		UpdatedEx1\main.js = UpdatedEx1\main.js
 	EndProjectSection
 EndProject
 Global
