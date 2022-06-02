@@ -1,13 +1,13 @@
-using ap2ex2API.Models;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Services;
-
 using Domain;
+using ap2ex2.Models;
 
-namespace ap2ex2API.Controllers
+namespace ap2ex2.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class InvitationsController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -36,5 +36,6 @@ namespace ap2ex2API.Controllers
             else
                 return NotFound();
         }
+
     }
 }

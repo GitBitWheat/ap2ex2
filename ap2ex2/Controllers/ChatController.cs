@@ -25,29 +25,42 @@ namespace ap2ex2.Controllers
         {
             User loggedInUser;
             _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier), out loggedInUser);
+
+            if (TempData["contactInChatId"] != null)
+                ViewBag.contactInChatId = TempData["contactInChatId"];
+
+            if (TempData["contactInChatName"] != null)
+                ViewBag.contactInChatName = TempData["contactInChatName"];
+
+            if (TempData["contactInChatServer"] != null)
+                ViewBag.contactInChatServer = TempData["contactInChatServer"];
+
             return View(loggedInUser);
         }
         
         [HttpPost]
-        public ActionResult AddContact(string contactToAdd)
+        public ActionResult AddContact(string contactId, string contactName, string contactServer)
         {
             _userService.AddContact(User.FindFirstValue(ClaimTypes.NameIdentifier), new Contact()
             {
-                Id = contactToAdd,
-                Name = contactToAdd,
-                Server = server
+                Id = contactId,
+                Name = contactName,
+                Server = contactServer
             });
             return RedirectToAction("Index");
         }
         
         [HttpPost]
-        public ActionResult ShowChat(string userId)
+        public ActionResult ShowChat(string contactId)
         {
-            User loggedInUser, userInChat;
-            _userService.GetUser(userId, out userInChat);
-            _userService.GetUser(User.FindFirstValue(ClaimTypes.NameIdentifier), out loggedInUser);
+            Contact contact;
+            if (_userService.GetContactOfId(User.FindFirstValue(ClaimTypes.NameIdentifier), contactId, out contact))
+            {
+                TempData["contactInChatId"] = contact.Id;
+                TempData["contactInChatName"] = contact.Name;
+                TempData["contactInChatServer"] = contact.Server;
+            }
 
-            loggedInUser.UserInChat = userInChat;
             return RedirectToAction("Index");
         }
 

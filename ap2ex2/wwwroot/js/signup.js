@@ -23,10 +23,5 @@
         //If the password verification does match, then hide the error message
         else
             passwordVerificationErrorElem.style.visibility = "hidden";
-
-        /*//If the user entered a pfp, create a url object of it
-          if (!inputPfp.value == "") {
-              var inputPfp_val = URL.createObjectURL(inputPfp.files[0]);
-          }*/
     });
 })();

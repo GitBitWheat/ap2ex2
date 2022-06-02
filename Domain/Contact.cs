@@ -30,7 +30,7 @@ namespace Domain
         public Contact(User user) {
             Id = user.Id;
             Name = user.Name;
-            Server = user.Server;
+            Server = "localhost:5183";
         }
     }
 }

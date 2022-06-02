@@ -1,8 +1,8 @@
-using ap2ex2API.Models;
+using ap2ex2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Services;
 
-namespace ap2ex2API.Controllers
+namespace ap2ex2.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

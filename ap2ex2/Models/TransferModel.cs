@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ap2ex2API.Models
+namespace ap2ex2.Models
 {
     public class TransferModel
     {

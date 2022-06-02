@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ap2ex2API.Models
+namespace ap2ex2.Models
 {
-    public class TransferModel
+    public class InvitationModel
     {
         public string From { get; set; }
         public string To { get; set; }
-        public string Content { get; set; }
+        public string Server { get; set; }
     }
 }

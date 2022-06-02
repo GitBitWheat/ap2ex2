@@ -21,8 +21,6 @@ namespace Domain
 
         public List<Contact> Contacts { get; set; } = new List<Contact>();
 
-        public User? UserInChat { get; set; }
-
         public string Server { get; set;  } = "I'll figure it out";
     }
 }
