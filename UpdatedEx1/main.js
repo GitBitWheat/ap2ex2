@@ -1,9 +1,7 @@
 $(document).ready(function () {
     var token = '';
-    var contacts = [];
-    var messages = [];
 
-    function loginReq(userId, password) {
+    function loginReq(userId, password, success, failure) {
         const body = {
             Username: userId,
             Password: password
@@ -17,13 +15,17 @@ $(document).ready(function () {
             statusCode: {
                 200: function (data) {
                     token = data;
+                    success();
+                },
+                403: function (data) {
+                    failure();
                 }
             },
             success: function (data) { console.log(data); }
         });
     }
 
-    function signupReq(userId, name, password) {
+    function signupReq(userId, name, password, success, failure) {
         const body = {
             Id: userId,
             Name: name,
@@ -35,11 +37,19 @@ $(document).ready(function () {
             type: 'POST',
             contentType: "application/json",
             data: JSON.stringify(body),
+            statusCode: {
+                200: function (data) {
+                    success();
+                },
+                403: function (data) {
+                    failure();
+                }
+            },
             success: function (data) { console.log(data); }
         });
     }
 
-    function getContactsReq() {
+    function getContactsReq(success) {
         $.ajax({
             url: 'http://localhost:5244/api/contacts',
             type: 'GET',
@@ -50,15 +60,14 @@ $(document).ready(function () {
             data: {},
             statusCode: {
                 200: function (data) {
-                    //Now the contacts list is the list we got from the api
-                    contacts = data;
+                    success(data);
                 }
             },
             success: function (data) { console.log(data); }
         });
     }
 
-    function addContactReq(contactId, contactName, contactServer) {
+    function addContactReq(contactId, contactName, contactServer, success, failure) {
         const body = {
             Id: contactId,
             Name: contactName,
@@ -73,11 +82,19 @@ $(document).ready(function () {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             },
             data: JSON.stringify(body),
+            statusCode: {
+                201: function (data) {
+                    success();
+                },
+                403: function (data) {
+                    failure();
+                }
+            },
             success: function (data) { console.log(data); }
         });
     }
 
-    function getMessagesReq(contactId) {
+    function getMessagesReq(contactId, success) {
         $.ajax({
             url: 'http://localhost:5244/api/contacts/' + contactId + '/messages',
             type: 'GET',
@@ -88,15 +105,14 @@ $(document).ready(function () {
             data: {},
             statusCode: {
                 200: function (data) {
-                    //Now the contacts list is the list we got from the api
-                    messages = data;
+                    success(data);
                 }
             },
             success: function (data) { console.log(data); }
         });
     }
 
-    function sendMessageReq(contactId, messageContent) {
+    function sendMessageReq(contactId, messageContent, success) {
         const body = {
             Content: messageContent
         };
@@ -109,6 +125,11 @@ $(document).ready(function () {
                 xhr.setRequestHeader('Authorization', 'Bearer ' + token);
             },
             data: JSON.stringify(body),
+            statusCode: {
+                201: function (data) {
+                    success();
+                }
+            },
             success: function (data) { console.log(data); }
         });
     }
@@ -144,83 +165,30 @@ $(document).ready(function () {
             success: function (data) { console.log(data); }
         });
     }
-
-    /**
-     * A user. Can log into the site and chat with other users.
-     * Users have their own userIds, username, nicknames, passwords and profile pictures.
-     * 
-     * @class User
-     */
-    class User {
-        constructor(userId, username, nickname, password, pfp) {
-            this.userId = userId;
-            this.username = username;
-            this.nickname = nickname;
-            this.password = password;
-            this.pfp = pfp;
-        }
-    }
-    
-    /**
-     * The array of all the different users which the website recognizes.
-     */
-    const usersArr = [];
-    
+        
     /**
      * The largest amount of characters the text in the added contacts list
      * of the latest message from a contact can have. If the latest message
      * is longer than this length, then its end is replaced with an ellipsis.
      */
     const MAX_LATEST_MESSAGE_LENGTH = 50;
-    
-    /**
-     * A map which stores all the messages sent between users.
-     * The keys are made up of the userIds of 2 users (the smaller one
-     * being the first so 2 users will always generate the same key).
-     * The values are arrays of messages.
-     */
-    const messagesMap = new Map();
-    
+        
     /**
      * The userId of the user which has logged into the website.
      */
     let loggedUser = null;
     
     /**
-     * The userId of the selected contact which we can send messages to.
+     * The Id and server of the selected contact which we can send messages to.
      */
     let sendTo = null;
-    
-    /**
-     * The key for the messagesMap of the logged user and the sendTo user.
-     */
-    let messageKey = null;
+    let sendToServer = null;
     
     /**
      * A boolean variable which is true when all of the buttons and message input
      * in the send message tab are enabled.
      */
     let areSendMessageTabContentsEnabled = false;
-    
-    /**
-     * The amount of image messages that are currently in the chat.
-     */
-    let amountOfImagesInChat = 0;
-    
-    /**
-     * The amount of video messages that are currently in the chat.
-     */
-    let amountOfVideosInChat = 0;
-    
-    /**
-     * The URL object of the last recording for the audio message.
-     */
-    let messageInputAudioObjectURL = null;
-    
-    /**
-     * A set of all the contacts which have been added so far.
-     */
-    const addedContacts = new Set();
     
     /**
      * A boolean variable which is true when at least one contact has been added.
@@ -239,13 +207,6 @@ $(document).ready(function () {
      */
     const latestMessageDateDivs = new Map();
     
-    /**
-     * The amount of users the website recognizes (the length of usersArr).
-     * Note that the website always launches with 5 recognized users, so the amount
-     * of users is initialized as 5 and not 0.
-     */
-    let amountOfUsers = 5;
-    
     //Every element in the HTML which needs to be accessed and stored into a constant variable is accessed here. 
     const loginBox = document.getElementById("login");
     const signupBox = document.getElementById("signUp");
@@ -257,32 +218,23 @@ $(document).ready(function () {
     const inputNickname = document.getElementById("inputNickname");
     const inputPassword_signup = document.getElementById("inputPassword-signup");
     const passwordVerfication = document.getElementById("verifyPassword");
-    const inputPfp = document.getElementById("inputPfp");
     
     const userInfo = document.getElementById("user-info");
-    const inputContact = document.getElementById("inputContact");
+
+    const inputContact = document.getElementById("inputContactId");
+    const inputContactName = document.getElementById("inputContactName");
+    const inputContactServer = document.getElementById("inputContactServer");
+
     const chatList = document.getElementById("chatList");
     const closeAddContact = document.getElementById("closeAddContact");
-    const closeImageModalButton = document.getElementById("closeImageModalButton");
-    const closeVideoModalButton = document.getElementById("closeVideoModalButton");
-    const closeMicrophoneModalButton = document.getElementById("closeMicrophoneModalButton");
     const sentChat = document.getElementById("sentChat");
     const contactInChat = document.getElementById("contactInChat");
     
-    const messageInputImage = document.getElementById("messageInputImage");
-    const messageInputVideo = document.getElementById("messageInputVideo");
-    
-    const imageButton = document.getElementById("imageButton");
-    const videoButton = document.getElementById("videoButton");
-    const microphoneButton = document.getElementById("microphoneButton");
     const text_message_to_send = document.getElementById("message-to-send");
     const sendTextMessageButton = document.getElementById("sendTextMessageButton");
     
     //All of the buttons and the message input in the send message tab are disabled by default.
     //They will be enabled once a contact is selected.
-    imageButton.disabled = true;
-    videoButton.disabled = true;
-    microphoneButton.disabled = true;
     text_message_to_send.disabled = true;
     sendTextMessageButton.disabled = true;
     
@@ -301,37 +253,15 @@ $(document).ready(function () {
     
     //addContactButton calls addContact() when clicked
     document.getElementById("addContactButton").addEventListener("click", addContact);
-    
-    
-    //sendImageMessageButton sends a new image message when clicked and passes the id of the logged user,
-    //unless the user is yet to have chosen an image, in which case an alert will be sent.
-    document.getElementById("sendImageMessageButton").addEventListener("click", () => {
-        if (messageInputImage.value != "") {
-            sendMessage(new ImageMessage(loggedUser, URL.createObjectURL(messageInputImage.files[0])));
-        } else {
-            alert("You haven't chosen an image yet")
-        }
+
+    //inviteContactButton invites a new contact with an invitations request
+    document.getElementById("inviteContactButton").addEventListener("click", () => {
+        const contactId = inputContact.value;
+        const contactServer = inputContactServer.value;
+
+        inviteContactReq(loggedUser, contactId, contactServer);
     });
-    
-    //sendVideoMessageButton sends a new video message when clicked and passes the id of the logged user,
-    //unless the user is yet to have chosen a video, in which case an alert will be sent.
-    document.getElementById("sendVideoMessageButton").addEventListener("click", () => {
-        if (messageInputVideo.value != "") {
-            sendMessage(new VideoMessage(loggedUser, URL.createObjectURL(messageInputVideo.files[0])));
-        } else {
-            alert("You haven't chosen a video yet");
-        }
-    });
-    
-    //sendAudioMessageButton sends a new audio message when clicked and passes the id of the logged user,
-    //unless the user is yet to have recorded an audio message, in which case an alert will be sent.
-    document.getElementById("sendAudioMessageButton").addEventListener("click", () => {
-        if (messageInputAudioObjectURL != null) {
-            sendMessage(new AudioMessage(loggedUser, messageInputAudioObjectURL));
-        } else {
-            alert("You haven't recorded a message yet");
-        }
-    });
+
     
     //sendTextMessageButton sends a new text message when clicked and passes the id of the logged user,
     //unless the user is yet to have typed a text message, in which case nothing will happen.
@@ -340,13 +270,16 @@ $(document).ready(function () {
             sendMessage(new TextMessage(loggedUser, text_message_to_send.value));
         }
     });
-    
-    
-    //closeMicrophoneModalButton clears the URL object of the latest recording when clicked.
-    //This way the same message can't be sent again.
-    document.getElementById("closeMicrophoneModalButton").addEventListener("click", () => { messageInputAudioObjectURL = null; });
-    
-    
+
+    document.getElementById("logoutButton").addEventListener("click", () => {
+        token = '';
+        sentChat.innerHTML = "";
+        contactInChat.innerHTML = "";
+        showLogin();
+    });
+
+    showLogin();
+
     /**
      * A text message. Has the userId of the user who sent it, the content of the message
      * which is a string, and the date in which it has been sent.
@@ -438,12 +371,6 @@ $(document).ready(function () {
         }
     }
     
-    //Creating some messages between the users
-    messagesMap.set("0:1", [new TextMessage(0, "I'm a wizard"), new TextMessage(1, "I'm a jedi")]);
-    messagesMap.set("0:2", [new TextMessage(2, "I'm a time traveler"), new TextMessage(0, "I also time traveled in my third book")]);
-    messagesMap.set("1:2", [new TextMessage(2, "Did you ever hear the tragedy of Darth Plagueis The Wise?"), new TextMessage(1, "Yup...")]);
-    messagesMap.set("3:4", [new TextMessage(3, "GOOD GAME TODAY"), new ImageMessage(3, "images/lebronstats.jpeg"), new TextMessage(4, "Appreciate That!!")]);
-    
     /**
      * Login functions checks wheter the username and password
      * that got entered is found in users map, and triggers
@@ -453,16 +380,14 @@ $(document).ready(function () {
     function logIn() {
         const inputUsername_login_val = inputUsername_login.value;
         const inputPassword_login_val = inputPassword_login.value;
-        const amountOfUsers = usersArr.length;
-        for (let i = 0; i < amountOfUsers; i++) {
-            if (inputUsername_login_val.toLowerCase() == usersArr[i].username.toLowerCase() && inputPassword_login_val == usersArr[i].password) {
-                loggedUser = usersArr[i].userId;
-                showChat();
-                getChat(usersArr[i].nickname, usersArr[i].pfp);
-                return;
-            }
-        }
-        alert("Wrong username or password");
+
+        loginReq(inputUsername_login_val, inputPassword_login_val, () => {
+            loggedUser = inputUsername_login_val;
+            showChat();
+            getChat(inputUsername_login_val);
+        }, () => {
+            alert("Wrong username or password");
+        });
     }
     
     /**
@@ -479,14 +404,6 @@ $(document).ready(function () {
         if (inputUsername_signup_val == "" || inputNickname_val == "" || inputPassword_signup_val == "" || passwordVerfication_val == "") {
             alert("You must fill all fields");
             return;
-        }
-    
-        //Checks if user alreadu exists
-        for (let i = 0; i < amountOfUsers; i++) {
-            if (inputUsername_signup_val == usersArr[i].username) {
-                alert("There already exists a user with this username");
-                return;
-            }
         }
     
         //does normal check over password entered (length, uppercase, etc...)
@@ -517,18 +434,13 @@ $(document).ready(function () {
             return;
         }
     
-        amountOfUsers++;
-    
-        //cehck if user didn't enter an images it put the default image
-        const inputPfp_val = "images/defaultProfile.jpeg"
-    
-        //adds user to userarr
-        usersArr.push(new User(amountOfUsers - 1, inputUsername_signup_val, inputNickname_val, inputPassword_signup_val, inputPfp_val));
-    
-        hideSignup();
 
         //Sending request to the api
-        signupReq(inputUsername_signup_val, inputNickname_val, inputPassword_signup_val);
+        signupReq(inputUsername_signup_val, inputNickname_val, inputPassword_signup_val, () => {
+            hideSignup();
+        }, () => {
+            alert("There already exists a user with this username");
+        });
     }
     
     /**
@@ -536,27 +448,18 @@ $(document).ready(function () {
      * @param {Message} message message need to be added
      */
     function sendMessage(message) {
-        if (message.content != '') {
-            //adds to message map
-            addMessageToMessagesMap(message);
+        if (message.content == '') {
+            return;
+        }
+
+        sendMessageReq(sendTo, message.content, () => {
             //writes message in document
-            message.writeMessageInDocument(message, true);
+            message.writeMessageInDocument(true);
             //updates latest message
             updateLatestMessage(message, sendTo);
-        }
-    }
-    
-    /**
-     * Adds message to the message map
-     * @param {Message} message message to need to be added to message map 
-     */
-    function addMessageToMessagesMap(message) {
-        if (messagesMap.has(messageKey)) {
-            messagesList = messagesMap.get(messageKey);
-            messagesList.push(message);
-        } else {
-            messagesMap.set(messageKey, [message]);
-        }
+            //transfers message
+            transferMessageReq(loggedUser, sendTo, message.content, sendToServer);
+        });
     }
     
     /**
@@ -569,54 +472,30 @@ $(document).ready(function () {
         if (contactId == sendTo) {
             return;
         }
-        
-        if (!areSendMessageTabContentsEnabled) {
-            enableSendMessageTabContents();
-            areSendMessageTabContentsEnabled = true;
-        }
-    
-        sendTo = contactId;
-        messageKey = getKeyOfTwoUsers(loggedUser, sendTo);
-    
-        sentChat.innerHTML = "";
-        amountOfImagesInChat = 0;
-        amountOfVideosInChat = 0;
-    
-        if (messagesMap.has(messageKey)) {
-            messagesList = messagesMap.get(messageKey);
+
+        getMessagesReq(contactId, messagesList => {
+            if (!areSendMessageTabContentsEnabled) {
+                enableSendMessageTabContents();
+                areSendMessageTabContentsEnabled = true;
+            }
+
+            sentChat.innerHTML = "";
+
             const amountOfMessages = messagesList.length;
-    
+
             for (let i = 0; i < amountOfMessages; i++) {
                 const message = messagesList[i];
-                message.writeMessageInDocument(loggedUser == message.senderId);
+                const senderId = message.sent ? loggedUser : contactId;
+                const textMessage = new TextMessage(senderId, message.content);
+                textMessage.writeMessageInDocument(message.sent);
             }
-        }
-    }
-    
-    /**
-     * return the key of two users which returns first 
-     * the smaller id bu valus
-     * 
-     * @param {number} userId1 The userId of the first user.
-     * @param {number} userId2 The userId of the second user.
-     * @returns key for messagesMap of two users
-     */
-    function getKeyOfTwoUsers(userId1, userId2) {
-        if (userId1 < userId2) {
-            var key = userId1 + ":" + userId2;
-        } else {
-            var key = userId2 + ":" + userId1;
-        }
-        return key;
+        });
     }
     
     /**
      * Enables all button when pressed on a contact
      */
     function enableSendMessageTabContents() {
-        imageButton.disabled = false;
-        videoButton.disabled = false;
-        microphoneButton.disabled = false;
         text_message_to_send.disabled = false;
         sendTextMessageButton.disabled = false;
     }
@@ -640,11 +519,11 @@ $(document).ready(function () {
      * @param {string} nickname nickname of contact
      * @param {URL} profile profile picture
      */
-    function loadContactInChat(nickname, profile) {
+    function loadContactInChat(nickname) {
         const colDiv = document.createElement("div");
         const userImg = document.createElement("img");
         const userNickname = document.createTextNode(nickname);
-        userImg.src = profile;
+        userImg.src = "defaultProfile.jpeg";
         userImg.alt = "Avatar";
         userImg.style.width = "60px";
         userImg.style.height = "60px";
@@ -661,118 +540,29 @@ $(document).ready(function () {
     }
     
     /**
-     * When pressed on add contact button, to add an already existing cxontact
-     * it add then to the left side of the screen in contact area,
-     * and also check if contact exists in contacts array
+     * When pressed on add contact button, to add an already existing contact
+     * it add then to the left side of the screen in contact area
      */
     function addContact() {
         const inputContact_val = inputContact.value;
+        const contactName = inputContactName.value;
+        const contactServer = inputContactServer.value;
         if (inputContact_val == "") {
             alert("You must fill the contact's username field");
             return;
         }
-    
-        let contact = null;
-        for (let i = 0; i < amountOfUsers; i++) {
-            if (inputContact_val.toLowerCase() == usersArr[i].username.toLowerCase()) {
-                contact = usersArr[i];
-                break;
-            }
-        }
-        //if enterd contact doed not exist
-        if (contact == null) {
-            alert("There is no user with this username");
-            return;
-        }
-    
-        //check if added contact is same as logged one
-        if (contact.userId == loggedUser) {
-            alert("You cannot add yourself as a contact");
-            return;
-        }
-    
-        //check if contact already added
-        if (addedContacts.has(contact.userId)) {
-            alert("This contact has already been added")
-            return;
-        }
-        addedContacts.add(contact.userId);
-    
-        if (!hasAContactBeenAdded) {
-            chatList.innerHTML = "";
-            hasAContactBeenAdded = true;
-        }
-    
-        //get's added contact latest message
-        const latestMessage = getLatestMessage(loggedUser, contact.userId);
-        if (latestMessage == null) {
-            var latestMessageGeneratedText = "";
-            var latestMessageDate = "";
-        } else {
-            var latestMessageGeneratedText = latestMessage.generateLatestMessageText();
-            var latestMessageDate = latestMessage.date.toUTCString();
-        }
-    
-        //creats html file to add to the document
-        const listItemOfContact = document.createElement("li");
-        listItemOfContact.className = "list-group-item d-flex justify-content-between align-items-start";
-        listItemOfContact.addEventListener("click", () => {loadContactMessages(contact.userId); loadContactInChat(contact.nickname, contact.pfp);});
-    
-        const contactPfpElement = document.createElement("img");
-        contactPfpElement.src = contact.pfp;
-        contactPfpElement.alt = "Avatar";
-        contactPfpElement.className = "contact-profile";
-    
-        listItemOfContact.appendChild(contactPfpElement);
-    
-        const contactDataDiv = document.createElement("div");
-        contactDataDiv.className = "ms-2 me-auto";
-    
-        const nicknameDiv = document.createElement("div");
-        nicknameDiv.className = "fw-bold";
-        nicknameDiv.appendChild(document.createTextNode(contact.nickname));
-    
-        contactDataDiv.appendChild(nicknameDiv);
-    
-        const latestMessageDiv = document.createElement("div");
-        latestMessageDiv.appendChild(document.createTextNode(latestMessageGeneratedText));
-    
-        latestMessageDivs.set(contact.userId, latestMessageDiv);
-        contactDataDiv.appendChild(latestMessageDiv);
 
-        const latestMessageDateDiv = document.createElement("div");
-        latestMessageDateDiv.className = "latest-message-date";
-        latestMessageDateDiv.appendChild(document.createTextNode(latestMessageDate));
-    
-        latestMessageDateDivs.set(contact.userId, latestMessageDateDiv);
-        contactDataDiv.appendChild(latestMessageDateDiv);
-    
-        listItemOfContact.appendChild(contactDataDiv);
-        chatList.appendChild(listItemOfContact);
-    
-        closeAddContact.click();
-        inputContact.value = "";
-    }
-    
-    /**
-     * Gets latest message between two users
-     * and returns it
-     * 
-     * @param {number} userId1 The userId of the first user.
-     * @param {number} userId2 The userId of the second user.
-     * @return The latest message between these 2 users.
-    */
-    
-    function getLatestMessage(userId1, userId2) {
-        const messageKeyOfThe2Users = getKeyOfTwoUsers(userId1, userId2);
-        if (messagesMap.has(messageKeyOfThe2Users)) {
-            messagesList = messagesMap.get(messageKeyOfThe2Users);
-            const amountOfMessages = messagesList.length;
-            const latestMessage = messagesList[amountOfMessages - 1];
-            return latestMessage;
-        } else {
-            return null;
-        }
+        addContactReq(inputContact_val, contactName, contactServer, () => {
+            if (!hasAContactBeenAdded) {
+                chatList.innerHTML = "";
+                hasAContactBeenAdded = true;
+            }
+
+            writeContactInDocument(inputContact_val, contactServer, contactName, "", "");
+            closeAddContact.click();
+        }, () => {
+            alert("Can't add this contact");
+        });
     }
     
     /**
@@ -820,6 +610,12 @@ $(document).ready(function () {
         loginBox.style.visibility = "hidden";
         chatBox.style.visibility = "visible";
     }
+
+    function showLogin() {
+        signupBox.style.visibility = "hidden";
+        loginBox.style.visibility = "visible";
+        chatBox.style.visibility = "hidden";
+    }
     
     /**
      * When a user signin it get the chat that 
@@ -828,11 +624,11 @@ $(document).ready(function () {
      * @param {string} nickname user nickname that get displayed
      * @param {URL} picture user image to get displayed
      */
-    function getChat(nickname, picture) {
+    function getChat(nickname) {
         userInfo.innerHTML = ""
         //creats html document to add to the main document
         const userImg = document.createElement("img");
-        userImg.src = picture;
+        userImg.src = "defaultProfile.jpeg";
         userImg.style.width = "60px";
         userImg.style.borderRadius = "50%";
         userImg.style.marginRight = "5px";
@@ -840,6 +636,20 @@ $(document).ready(function () {
     
         userInfo.appendChild(userImg);
         userInfo.appendChild(nicknameTextNode);
+
+        getContactsReq(contacts => {
+            const contactsLength = contacts.length;
+
+            if (contactsLength > 0) {
+                chatList.innerHTML = "";
+                hasAContactBeenAdded = true;
+            }
+
+            for (let i = 0; i < contactsLength; i++) {
+                writeContactInDocument(contacts[i].id, contacts[i].server, contacts[i].name,
+                    contacts[i].last, contacts[i].lastdate);
+            }
+        });
     }
     
     /**
@@ -849,88 +659,56 @@ $(document).ready(function () {
     function scrollChat(){
         sentChat.scrollTop = sentChat.scrollHeight;
     }
-    
-    
-    //An audio recorder
-    let audioRecorder;
-    
-    //startRecordingButton calls startRecording() when clicked
-    document.getElementById("startRecordingButton").addEventListener("click", startRecording);
-    
-    //stopRecordingButton calls stopRecording() when clicked
-    document.getElementById("stopRecordingButton").addEventListener("click", stopRecording);
-    
-    /**
-     * Generates a new audio recorder.
-     * 
-     * @returns An audio recorder.
-     * @async
-     */
-    async function generateAudioRecorder() {
-        //Awaiting the creation of an audio media stream
-        const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    
-        //Creating a media recorder with the audio media stream
-        const mediaRecorder = new MediaRecorder(mediaStream);
-    
-        //An array which stores the data chunks of the recording.
-        //When there's data available for mediaRecorder, it will push it in audioChunks.
-        const audioChunks = [];
-    
-        mediaRecorder.addEventListener("dataavailable", event => {
-            audioChunks.push(event.data);
+
+    function writeContactInDocument(contactId, contactServer, contactName, last, lastdate) {
+        const latestMessageGeneratedText = last;
+        const latestMessageDate = lastdate;
+
+        //creates html file to add to the document
+        const listItemOfContact = document.createElement("li");
+        listItemOfContact.className = "list-group-item d-flex justify-content-between align-items-start";
+        listItemOfContact.addEventListener("click", () => {
+            loadContactMessages(contactId);
+            loadContactInChat(contactName);
+            enableSendMessageTabContents();
+            sendTo = contactId;
+            sendToServer = contactServer;
         });
-    
-        //The start function starts the media recorder.
-        const start = () => {
-            mediaRecorder.start();
-        };
-    
-        //The stop function adds an event when the media recorder stops. audioChunks will be used in order
-        //to create a URL object of the recording.
-        //Then the function stops the media recorder.
-        //The function returns a promise which will resolve once the stop event finishes. The resolved promise
-        //will return the URL object. 
-        const stop = () => {
-            return new Promise(resolve => {
-                mediaRecorder.addEventListener("stop", () => {
-                    const audioBlob = new Blob(audioChunks);
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    resolve(audioUrl);
-                });
-    
-                mediaRecorder.stop();
-            });
-        };
-    
-        //Returning the audio recorder, which is an object which has the start and stop funtions.
-        return {start, stop};
-    };
-    
-    /**
-     * Generates a new audio recorder and starts a recording.
-     * 
-     * @async
-     */
-    async function startRecording() {
-        audioRecorder = await generateAudioRecorder();
-        audioRecorder.start();
-    }
-    
-    /**
-     * Stops an ongoing recording and deletes the previous audio recorder.
-     * If there isn't an ongoing recorder then nothing happens.
-     * 
-     * @async
-     */
-    async function stopRecording() {
-        //An audio recorder is generated when startRecording() is called and deleted
-        //when stopRecording() is called. So (audioRecorder != null) only if there's
-        //a recording going on.
-        if (audioRecorder == null) {
-            return;
-        }
-        messageInputAudioObjectURL = await audioRecorder.stop();
-        audioRecorder = null;
+
+        const contactPfpElement = document.createElement("img");
+        contactPfpElement.src = "defaultProfile.jpeg";
+        contactPfpElement.alt = "Avatar";
+        contactPfpElement.className = "contact-profile";
+
+        listItemOfContact.appendChild(contactPfpElement);
+
+        const contactDataDiv = document.createElement("div");
+        contactDataDiv.className = "ms-2 me-auto";
+
+        const nicknameDiv = document.createElement("div");
+        nicknameDiv.className = "fw-bold";
+        nicknameDiv.appendChild(document.createTextNode(contactName));
+
+        contactDataDiv.appendChild(nicknameDiv);
+
+        const latestMessageDiv = document.createElement("div");
+        latestMessageDiv.appendChild(document.createTextNode(latestMessageGeneratedText));
+
+        latestMessageDivs.set(contactId, latestMessageDiv);
+        contactDataDiv.appendChild(latestMessageDiv);
+
+        const latestMessageDateDiv = document.createElement("div");
+        latestMessageDateDiv.className = "latest-message-date";
+        latestMessageDateDiv.appendChild(document.createTextNode(latestMessageDate));
+
+        latestMessageDateDivs.set(contactId, latestMessageDateDiv);
+        contactDataDiv.appendChild(latestMessageDateDiv);
+
+        listItemOfContact.appendChild(contactDataDiv);
+        chatList.appendChild(listItemOfContact);
+
+        inputContact.value = "";
+        inputContactName.value = "";
+        inputContactServer.value = "";
     }
 });
