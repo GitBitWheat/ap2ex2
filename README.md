@@ -18,6 +18,8 @@ Go to:<br />
 profiles -> ap2ex2API -> applicationUrl<br />
 Make sure the port is 5244<br />
 
+The web application and the web api are two separate projects.<br />
+Both use static lists instead of a database, so using one won't influence the other.<br />
 In order to run the web application, set ap2ex2 as start up project and start.<br />
 In order to run the web api, set ap2ex2API as start up project and start.<br />
 If you want to run the code from ex1 which was adjusted to work with the api, then run the web api and then open UpdatedEx1/index.html.
