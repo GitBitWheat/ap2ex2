@@ -6,40 +6,9 @@ public class UserService : IUserService
 {
     private static List<User> users = new List<User>();
     private static int msgCount = 0;
-
-    //Remove later
-    public static bool hasBeenInitialized = false;
-    public void firstInitialization()
-    {
-        if (hasBeenInitialized)
-            return;
-
-        hasBeenInitialized = true;
-
-        User user1 = new User() { Id = "user1", Name = "First User", Password = "User1" };
-        User user2 = new User() { Id = "user2", Name = "Second User", Password = "User2" };
-        User user3 = new User() { Id = "user3", Name = "Third User", Password = "User3" };
-        User user4 = new User() { Id = "user4", Name = "Fourth User", Password = "User4" };
-        users.Add(user1);
-        users.Add(user2);
-        users.Add(user3);
-        users.Add(user4);
-        Contact contact1 = new Contact(user1);
-        Contact contact2 = new Contact(user2);
-        AddContact("user1", contact2);
-        AddContact("user2", contact1);
-        SendMessage("I'm user1", "user1", "user2");
-        ReceiveMessage("I'm user1", "user1", "user2");
-        SendMessage("I'm user2", "user2", "user1");
-        ReceiveMessage("I'm user2", "user2", "user1");
-    }
-    //Delete later
-
+    
     public UserService()
     {
-        //Delete later
-        firstInitialization();
-        //Delete later
     }
 
     public List<User> GetAllUsers()
